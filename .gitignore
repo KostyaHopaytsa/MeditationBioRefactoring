@@ -1,0 +1,18 @@
+# Android
+.gradle/
+.idea/
+build/
+local.properties
+
+# compile ignore
+**/build/
+*.iml
+
+# cash Android Studio
+.cxx/
+.externalNativeBuild/
+captures/
+
+# OS-specific
+.DS_Store
+Thumbs.db

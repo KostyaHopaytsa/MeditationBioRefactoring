@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.meditationbiorefactoring.app.presentation.HomeScreen
+import com.example.meditationbiorefactoring.feature_bio.presentation.bio_history.BioHistoryScreen
 import com.example.meditationbiorefactoring.feature_bio.presentation.measurement_bpm.BpmScreen
 import com.example.meditationbiorefactoring.feature_bio.presentation.measurement_brpm.BrpmScreen
 import com.example.meditationbiorefactoring.feature_bio.presentation.measurement_siv.SivScreen
@@ -20,7 +21,8 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         composable(route = Screen.HomeScreen.route) {
             HomeScreen(
                 onNavigateToBpm = { navController.navigate(Screen.BpmScreen.route) },
-                onNavigateToMusic = { navController.navigate(Screen.MusicScreen.route) }
+                onNavigateToMusic = { navController.navigate(Screen.MusicScreen.route) },
+                onNavigateToBioHistory = { navController.navigate(Screen.BioHistoryScreen.route) }
             )
         }
         composable(route = Screen.BpmScreen.route) {
@@ -35,6 +37,11 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         }
         composable(route = Screen.SivScreen.route) {
             SivScreen(
+                onNavigateToMusic = { navController.navigate(Screen.MusicScreen.route) }
+            )
+        }
+        composable(route = Screen.BioHistoryScreen.route) {
+            BioHistoryScreen(
                 onNavigateToMusic = { navController.navigate(Screen.MusicScreen.route) }
             )
         }

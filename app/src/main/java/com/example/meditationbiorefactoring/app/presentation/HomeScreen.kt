@@ -5,7 +5,8 @@ import androidx.compose.runtime.Composable
 @Composable
 fun HomeScreen(
     onNavigateToBpm: () -> Unit,
-    onNavigateToMusic: () -> Unit
+    onNavigateToMusic: () -> Unit,
+    onNavigateToBioHistory: () -> Unit
 ) {
 
 }

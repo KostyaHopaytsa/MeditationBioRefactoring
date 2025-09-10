@@ -1,0 +1,9 @@
+package com.example.meditationbiorefactoring.app.navigation
+
+sealed class Screen(val route: String) {
+    data object HomeScreen : Screen("home_screen")
+    data object BpmScreen : Screen("bpm_screen")
+    data object BrpmScreen : Screen("brpm_screen")
+    data object SivScreen : Screen("siv_screen")
+    data object MusicScreen : Screen("music_screen")
+}

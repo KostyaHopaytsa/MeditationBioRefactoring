@@ -17,19 +17,13 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(
-            onClick = onNavigateToBpm
-        ) {
+        Button(onClick = onNavigateToBpm) {
             Text(text = "Measurement bio")
         }
-        Button(
-            onClick = onNavigateToMusic
-        ) {
+        Button(onClick = onNavigateToMusic) {
             Text(text = "Music")
         }
-        Button(
-            onClick = onNavigateToBioHistory
-        ) {
+        Button(onClick = onNavigateToBioHistory) {
             Text(text = "Measurement history")
         }
     }

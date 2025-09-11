@@ -1,5 +1,6 @@
 package com.example.meditationbiorefactoring.app.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -47,6 +48,11 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         }
         composable(route = Screen.MusicScreen.route) {
             MusicScreen()
+            BackHandler {
+                navController.navigate(Screen.HomeScreen.route) {
+                    popUpTo(Screen.HomeScreen.route) { inclusive = false }
+                }
+            }
         }
     }
 }

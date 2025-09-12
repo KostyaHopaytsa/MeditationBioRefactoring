@@ -8,14 +8,14 @@ import com.example.meditationbiorefactoring.feature_bio.presentation.components.
 fun SivScreen(onNavigateToMusic: () -> Unit) {
     Measurement(
         type = "SIV",
-        onStart = { /* запуск логіки вимірювання */ }
+        onStart = { /*start measurement logic*/ }
     )
     MeasurementResult(
-        status = "low", //must change later to real value
-        value = "20", //must change later to real value
+        status = "low", //change later to real value
+        value = "20", //change later to real value
         type = "SIV",
         buttonDescription = "Listen music",
         onNavigateTo = onNavigateToMusic,
-        onRestart = { /*must implement restart logic later*/ }
+        onRestart = { /*implement restart logic later*/ }
     )
 }

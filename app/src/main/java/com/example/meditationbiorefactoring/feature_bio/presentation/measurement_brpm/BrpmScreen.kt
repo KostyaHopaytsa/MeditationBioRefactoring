@@ -8,14 +8,14 @@ import com.example.meditationbiorefactoring.feature_bio.presentation.components.
 fun BrpmScreen(onNavigateToSiv: () -> Unit) {
     Measurement(
         type = "BRPM",
-        onStart = { /* запуск логіки вимірювання */ }
+        onStart = { /*start measurement logic*/ }
     )
     MeasurementResult(
-        status = "low", //must change later to real value
-        value = "10", //must change later to real value
+        status = "low", //change later to real value
+        value = "10", //change later to real value
         type = "BRPM",
         buttonDescription = "To SIV",
         onNavigateTo = onNavigateToSiv,
-        onRestart = { /*must implement restart logic later*/ }
+        onRestart = { /*implement restart logic later*/ }
     )
 }

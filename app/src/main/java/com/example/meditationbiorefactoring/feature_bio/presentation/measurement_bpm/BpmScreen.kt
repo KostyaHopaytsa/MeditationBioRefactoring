@@ -15,6 +15,7 @@ fun BpmScreen(onNavigateToBrpm: () -> Unit) {
         value = "60", //must change later to real value
         type = "BPM",
         buttonDescription = "To BRPM",
-        onNavigateTo = onNavigateToBrpm
+        onNavigateTo = onNavigateToBrpm,
+        onRestart = { /*must implement restart logic later*/ }
     )
 }

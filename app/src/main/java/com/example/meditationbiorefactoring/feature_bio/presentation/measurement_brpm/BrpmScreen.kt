@@ -15,6 +15,7 @@ fun BrpmScreen(onNavigateToSiv: () -> Unit) {
         value = "10", //must change later to real value
         type = "BRPM",
         buttonDescription = "To SIV",
-        onNavigateTo = onNavigateToSiv
+        onNavigateTo = onNavigateToSiv,
+        onRestart = { /*must implement restart logic later*/ }
     )
 }

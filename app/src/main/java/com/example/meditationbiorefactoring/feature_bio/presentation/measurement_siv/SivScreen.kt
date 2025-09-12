@@ -15,6 +15,7 @@ fun SivScreen(onNavigateToMusic: () -> Unit) {
         value = "20", //must change later to real value
         type = "SIV",
         buttonDescription = "Listen music",
-        onNavigateTo = onNavigateToMusic
+        onNavigateTo = onNavigateToMusic,
+        onRestart = { /*must implement restart logic later*/ }
     )
 }

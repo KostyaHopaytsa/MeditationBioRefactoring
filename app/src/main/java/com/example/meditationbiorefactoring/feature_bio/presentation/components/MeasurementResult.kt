@@ -8,18 +8,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 
 @Composable
-fun MeasurementResultSection(
-    measurementResult: String,
-    measurementResultValue: String,
-    measurementType: String,
-    nextMeasurementType: String,
+fun MeasurementResult(
+    status: String,
+    value: String,
+    type: String,
+    buttonDescription: String,
     onNavigateTo: () -> Unit
 ) {
     Box(contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "$measurementType:$measurementResultValue - $measurementResult")
+            Text(text = "$type:$value - $status")
             Button(onClick = onNavigateTo) {
-                Text(text = "To $nextMeasurementType")
+                Text(text = buttonDescription)
             }
         }
     }

@@ -1,11 +1,15 @@
 package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_siv
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.Measurement
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementResult
 
 @Composable
-fun SivScreen(onNavigateToMusic: () -> Unit) {
+fun SivScreen(
+    onNavigateToMusic: () -> Unit,
+    viewModel: SivViewModel = hiltViewModel()
+) {
     Measurement(
         type = "SIV",
         onStart = { /*start measurement logic*/ }

@@ -13,11 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.meditationbiorefactoring.feature_music.presentation.components.MusicItem
 import com.example.meditationbiorefactoring.feature_music.presentation.components.PlayerBar
 
 @Composable
-fun MusicScreen() {
+fun MusicScreen(viewModel: MusicViewModel = hiltViewModel()) {
     LazyColumn {
         items(20) {
             //all string hardcoded and must implemented later

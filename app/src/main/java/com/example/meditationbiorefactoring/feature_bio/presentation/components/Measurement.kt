@@ -32,7 +32,6 @@ fun Measurement(
             modifier = Modifier.align(Alignment.BottomCenter),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LinearProgressIndicator()
             Button(
                 onClick = onStart,
                 Modifier

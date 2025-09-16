@@ -2,7 +2,7 @@ package com.example.meditationbiorefactoring.feature_bio.presentation.measuremen
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.meditationbiorefactoring.feature_bio.presentation.components.Measurement
+import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementStart
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementResult
 
 @Composable
@@ -10,7 +10,7 @@ fun BrpmScreen(
     onNavigateToSiv: () -> Unit,
     viewModel: BrpmViewModel = hiltViewModel()
 ) {
-    Measurement(
+    MeasurementStart(
         type = "BRPM",
         onStart = { /*start measurement logic*/ }
     )

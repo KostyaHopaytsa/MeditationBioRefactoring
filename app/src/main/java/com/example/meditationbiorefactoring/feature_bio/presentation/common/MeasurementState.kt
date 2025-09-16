@@ -1,7 +1,7 @@
 package com.example.meditationbiorefactoring.feature_bio.presentation.common
 
 data class MeasurementState(
-    val value: String = "",
+    val result: String = "",
     val status: String = "",
     val isMeasuring: Boolean = false,
     val isLoading: Boolean = false,

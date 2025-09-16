@@ -2,12 +2,15 @@ package com.example.meditationbiorefactoring.feature_bio.presentation.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,12 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Measurement(
+fun MeasurementStart(
     type: String,
     onStart: () -> Unit
 ) {
     Box(
         modifier = Modifier
+            .fillMaxSize()
             .navigationBarsPadding()
             .padding(20.dp)
     ) {
@@ -34,12 +38,15 @@ fun Measurement(
         ) {
             Button(
                 onClick = onStart,
-                Modifier
+                modifier = Modifier
                     .padding(20.dp)
                     .size(75.dp),
                 shape = RoundedCornerShape(75.dp),
             ) {
-                Text(text = "")
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = "Start measurement"
+                )
             }
         }
     }

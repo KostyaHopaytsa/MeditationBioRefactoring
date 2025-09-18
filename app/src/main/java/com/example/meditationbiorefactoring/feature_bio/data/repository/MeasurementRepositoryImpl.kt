@@ -1,0 +1,27 @@
+package com.example.meditationbiorefactoring.feature_bio.data.repository
+
+import com.example.meditationbiorefactoring.feature_bio.data.local_data_source.MeasurementDao
+import com.example.meditationbiorefactoring.feature_bio.domain.model.Measurement
+import com.example.meditationbiorefactoring.feature_bio.domain.repository.MeasurementRepository
+import kotlinx.coroutines.flow.Flow
+
+class MeasurementRepositoryImpl(
+    private val dao: MeasurementDao
+) : MeasurementRepository {
+    override fun getMeasurements(): Flow<List<Measurement>> {
+        return dao.getMeasurements()
+    }
+
+    override suspend fun getMeasurementById(id: Int): Measurement? {
+        return dao.getMeasurementById(id)
+    }
+
+    override suspend fun insertMeasurement(measurement: Measurement) {
+        dao.insertMeasurement(measurement)
+    }
+
+    override suspend fun deleteMeasurement(measurement: Measurement) {
+        dao.deleteMeasurement(measurement)
+    }
+
+}

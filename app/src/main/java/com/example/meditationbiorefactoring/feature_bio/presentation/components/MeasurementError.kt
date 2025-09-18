@@ -24,12 +24,12 @@ fun MeasurementError(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Помилка: $message",
+            text = "error: $message",
             color = MaterialTheme.colorScheme.error
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onRetry) {
-            Text("Спробувати знову")
+            Text("Try again")
         }
     }
 }

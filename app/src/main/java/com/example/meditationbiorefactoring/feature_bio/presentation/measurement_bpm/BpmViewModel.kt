@@ -3,40 +3,95 @@ package com.example.meditationbiorefactoring.feature_bio.presentation.measuremen
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.meditationbiorefactoring.feature_bio.presentation.common.MeasurementState
+import com.example.meditationbiorefactoring.feature_bio.presentation.common.BioState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import androidx.compose.animation.core.Animatable
-import com.example.meditationbiorefactoring.feature_bio.presentation.common.MeasurementEvent
+import androidx.compose.animation.core.tween
+import androidx.lifecycle.viewModelScope
+import com.example.meditationbiorefactoring.feature_bio.presentation.common.ErrorType
+import com.example.meditationbiorefactoring.feature_bio.presentation.common.BioEvent
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 @HiltViewModel
-class BpmViewModel @Inject constructor(
+class BpmViewModel @Inject constructor(): ViewModel() {
 
-): ViewModel() {
+    private val _state = mutableStateOf(BioState())
+    val state: State<BioState> = _state
 
-    private val _state = mutableStateOf(MeasurementState())
-    val state: State<MeasurementState> = _state
+    val durationMillis = 2000L
 
-    private val progressAnim = Animatable(0f)
-
-    fun onEvent(event: MeasurementEvent) {
+    fun onEvent(event: BioEvent) {
         when(event) {
-            is MeasurementEvent.Start -> startMeasurement()
-            is MeasurementEvent.Restart -> restartMeasurement()
-            is MeasurementEvent.CameraError -> setError("Camera error: ${event.message}")
-            is MeasurementEvent.MeasurementError -> setError("Measurement error: ${event.message}")
+            is BioEvent.Start -> {
+                startMeasurement()
+            }
+            is BioEvent.Retry -> {
+                _state.value = BioState()
+                startMeasurement()
+            }
+            is BioEvent.Reset -> {
+                _state.value = BioState()
+                startMeasurement()
+            }
+            is BioEvent.Error -> {
+                setError(event.error)
+            }
         }
     }
 
     private fun startMeasurement() {
-        TODO("Not yet implemented")
+        _state.value =  _state.value.copy(isLoading = true)
+
+        viewModelScope.launch {
+            try {
+
+                delay(1000)
+
+                if(Random.nextBoolean()) {
+                    throw RuntimeException("Camera failed")
+                }
+
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    isMeasuring = true,
+                )
+
+                delay(durationMillis)
+
+                if(Random.nextBoolean()) {
+                    throw RuntimeException("Measurement failed")
+                }
+
+                _state.value = _state.value.copy(
+                    isMeasuring = false,
+                    isMeasured= true,
+                    value = "60",
+                    status = "low",
+                )
+            } catch (e: Exception) {
+                val errorType = when (e.message) {
+                    "Camera failed" -> ErrorType.SensorError
+                    "Measurement failed" -> ErrorType.MeasureError
+                    else -> ErrorType.UnknownError
+                }
+
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    isMeasuring = false,
+                    error = errorType
+                )
+            }
+        }
     }
 
-    private fun restartMeasurement() {
-        TODO("Not yet implemented")
-    }
-
-    private fun setError(message: String) {
-        TODO("Not yet implemented")
+    private fun setError(error: ErrorType) {
+        _state.value = _state.value.copy(
+            isLoading = false,
+            isMeasuring = false,
+            error = error
+        )
     }
 }

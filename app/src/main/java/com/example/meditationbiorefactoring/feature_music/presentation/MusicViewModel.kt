@@ -11,4 +11,24 @@ class MusicViewModel @Inject constructor(): ViewModel() {
 
     private val _state = mutableStateOf(MusicState())
     val state: State<MusicState> = _state
+
+    fun onEvent(event: MusicEvent) {
+        when(event) {
+            is MusicEvent.Pause -> {
+                TODO()
+            }
+            is MusicEvent.Play -> {
+                TODO()
+            }
+            is MusicEvent.RetryLoad -> {
+                TODO()
+            }
+            is MusicEvent.SeekTo -> {
+                TODO()
+            }
+//            is MusicEvent.SelectTrack -> {
+//                TODO()
+//            }
+        }
+    }
 }

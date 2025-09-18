@@ -19,6 +19,8 @@ import com.example.meditationbiorefactoring.feature_music.presentation.component
 
 @Composable
 fun MusicScreen(viewModel: MusicViewModel = hiltViewModel()) {
+    val state = viewModel.state.value
+
     LazyColumn {
         items(20) {
             //all string hardcoded and must implemented later
@@ -37,15 +39,17 @@ fun MusicScreen(viewModel: MusicViewModel = hiltViewModel()) {
             )
         }
     }
-    PlayerBar(
-        //all string hardcoded and must implemented later
-        image = null,
-        title = "title",
-        author = "author",
-        isPlaying = false,
-        buttonIcon = Icons.Default.PlayArrow,
-        onPlayPause = {
-            /*implement later*/
-        },
-    )
+    //state.currentTrack?.let {
+        PlayerBar(
+            //all string hardcoded and must implemented later
+            image = null,
+            title = "title",
+            author = "author",
+            isPlaying = false,
+            buttonIcon = Icons.Default.PlayArrow,
+            onPlayPause = {
+                /*implement later*/
+            },
+        )
+    //}
 }

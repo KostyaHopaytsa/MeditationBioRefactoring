@@ -1,4 +1,4 @@
-package com.example.meditationbiorefactoring.feature_bio.data.local_data_source
+package com.example.meditationbiorefactoring.feature_bio.data.local
 
 import androidx.room.Dao
 import androidx.room.Delete

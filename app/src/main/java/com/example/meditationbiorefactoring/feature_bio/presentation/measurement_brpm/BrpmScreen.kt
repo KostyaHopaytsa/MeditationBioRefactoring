@@ -12,11 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.meditationbiorefactoring.feature_bio.presentation.common.BioEvent
 import com.example.meditationbiorefactoring.feature_bio.presentation.common.ErrorType
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementError
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementStart
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.presentation.measurement_bpm.BpmEvent
 
 @Composable
 fun BrpmScreen(
@@ -46,7 +46,7 @@ fun BrpmScreen(
                     type = "BRPM",
                     buttonDescription = "To SIV",
                     onNavigateTo = onNavigateToSiv,
-                    onRestart = { viewModel.onEvent(BioEvent.Reset) }
+                    onRestart = { viewModel.onEvent(BrpmEvent.Reset) }
                 )
             }
             state.error != null -> {
@@ -57,13 +57,13 @@ fun BrpmScreen(
                 }
                 MeasurementError(
                     message = errorMessage,
-                    onRetry = { viewModel.onEvent(BioEvent.Retry) }
+                    onRetry = { viewModel.onEvent(BrpmEvent.Retry) }
                 )
             }
             else -> {
                 MeasurementStart(
                     type = "BRPM",
-                    onStart = { viewModel.onEvent(BioEvent.Start) }
+                    onStart = { viewModel.onEvent(BrpmEvent.Start) }
                 )
             }
         }

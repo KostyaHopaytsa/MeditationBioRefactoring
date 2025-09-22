@@ -10,11 +10,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.meditationbiorefactoring.feature_bio.presentation.common.BioEvent
 import com.example.meditationbiorefactoring.feature_bio.presentation.common.ErrorType
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementError
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementStart
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.presentation.measurement_brpm.BrpmEvent
 
 @Composable
 fun SivScreen(
@@ -44,7 +44,7 @@ fun SivScreen(
                     type = "SIV",
                     buttonDescription = "To Music",
                     onNavigateTo = onNavigateToMusic,
-                    onRestart = { viewModel.onEvent(BioEvent.Reset) }
+                    onRestart = { viewModel.onEvent(SivEvent.Reset) }
                 )
             }
             state.error != null -> {
@@ -55,13 +55,13 @@ fun SivScreen(
                 }
                 MeasurementError(
                     message = errorMessage,
-                    onRetry = { viewModel.onEvent(BioEvent.Retry) }
+                    onRetry = { viewModel.onEvent(SivEvent.Retry) }
                 )
             }
             else -> {
                 MeasurementStart(
                     type = "SIV",
-                    onStart = { viewModel.onEvent(BioEvent.Start) }
+                    onStart = { viewModel.onEvent(SivEvent.Start) }
                 )
             }
         }

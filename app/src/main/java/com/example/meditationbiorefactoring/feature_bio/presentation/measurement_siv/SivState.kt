@@ -1,0 +1,13 @@
+package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_siv
+
+import com.example.meditationbiorefactoring.feature_bio.presentation.common.ErrorType
+
+data class SivState(
+    val isLoading: Boolean = false,
+    val isMeasuring: Boolean = false,
+    val isMeasured: Boolean = false,
+    val value: String = "",
+    val status: String = "",
+    val progress: Float = 0f,
+    val error: ErrorType? = null
+)

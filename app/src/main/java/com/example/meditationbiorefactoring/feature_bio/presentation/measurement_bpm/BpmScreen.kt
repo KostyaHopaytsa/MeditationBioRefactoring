@@ -18,10 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.meditationbiorefactoring.feature_bio.presentation.common.ErrorType
-import com.example.meditationbiorefactoring.feature_bio.presentation.common.BioEvent
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementError
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementStart
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.presentation.measurement_bpm.components.CameraPreview
 
 @Composable
 fun BpmScreen(
@@ -38,7 +38,7 @@ fun BpmScreen(
             progress.animateTo(
                 targetValue = 1f,
                 animationSpec = tween(
-                    durationMillis = viewModel.durationMillis.toInt(), // тривалість виміру
+                    durationMillis = 20000,
                     easing = LinearEasing
                 )
             )
@@ -58,7 +58,14 @@ fun BpmScreen(
             state.isLoading -> {
                 CircularProgressIndicator()
             }
+
             state.isMeasuring -> {
+                CameraPreview(
+                    modifier = Modifier.fillMaxSize(),
+                    onFrameCaptured = { buffer ->
+                        viewModel.onEvent(BpmEvent.FrameCaptured(buffer))
+                    }
+                )
                 LinearProgressIndicator(
                     progress = { progress.value },
                     modifier = Modifier
@@ -67,6 +74,7 @@ fun BpmScreen(
                         .padding(25.dp)
                 )
             }
+
             state.isMeasured -> {
                 MeasurementResult(
                     status = state.status,
@@ -74,9 +82,10 @@ fun BpmScreen(
                     type = "BPM",
                     buttonDescription = "To BRPM",
                     onNavigateTo = onNavigateToBrpm,
-                    onRestart = { viewModel.onEvent(BioEvent.Reset) }
+                    onRestart = { viewModel.onEvent(BpmEvent.Reset) }
                 )
             }
+
             state.error != null -> {
                 val errorMessage = when (state.error) {
                     ErrorType.SensorError -> "Camera initialization failed"
@@ -85,13 +94,14 @@ fun BpmScreen(
                 }
                 MeasurementError(
                     message = errorMessage,
-                    onRetry = { viewModel.onEvent(BioEvent.Retry) }
+                    onRetry = { viewModel.onEvent(BpmEvent.Retry) }
                 )
             }
+
             else -> {
                 MeasurementStart(
                     type = "BPM",
-                    onStart = { viewModel.onEvent(BioEvent.Start) }
+                    onStart = { viewModel.onEvent(BpmEvent.Start) }
                 )
             }
         }

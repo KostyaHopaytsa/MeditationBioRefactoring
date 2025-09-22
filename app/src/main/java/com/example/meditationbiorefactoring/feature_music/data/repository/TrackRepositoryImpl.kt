@@ -11,7 +11,6 @@ class TrackRepositoryImpl(
 ) : TrackRepository {
     override suspend fun getTracksByTag(tag: String): List<Track> {
         return api.getTracksByTag(
-            clientId = Constants.CLIENT_ID,
             tag = tag
         ).results.map { it.toTrack() }
     }

@@ -5,8 +5,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.meditationbiorefactoring.feature_bio.presentation.common.BioEvent
-import com.example.meditationbiorefactoring.feature_bio.presentation.common.BioState
 import com.example.meditationbiorefactoring.feature_bio.presentation.common.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -17,23 +15,23 @@ import kotlin.random.Random
 @HiltViewModel
 class SivViewModel @Inject constructor(): ViewModel() {
 
-    private val _state = mutableStateOf(BioState())
-    val state: State<BioState> = _state
+    private val _state = mutableStateOf(SivState())
+    val state: State<SivState> = _state
 
-    fun onEvent(event: BioEvent) {
+    fun onEvent(event: SivEvent) {
         when(event) {
-            is BioEvent.Start -> {
+            is SivEvent.Start -> {
                 startMeasurement()
             }
-            is BioEvent.Retry -> {
-                _state.value = BioState()
+            is SivEvent.Retry -> {
+                _state.value = SivState()
                 startMeasurement()
             }
-            is BioEvent.Reset -> {
-                _state.value = BioState()
+            is SivEvent.Reset -> {
+                _state.value = SivState()
                 startMeasurement()
             }
-            is BioEvent.Error -> {
+            is SivEvent.Error -> {
                 setError(event.error)
             }
         }

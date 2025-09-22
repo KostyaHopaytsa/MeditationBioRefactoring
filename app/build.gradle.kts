@@ -85,4 +85,14 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-moshi:2.11.0")
     implementation ("com.squareup.okhttp3:okhttp:4.12.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+    // Core CameraX
+    implementation ("androidx.camera:camera-core:1.2.3")
+    implementation ("androidx.camera:camera-camera2:1.2.3")
+
+    // Для PreviewView у Compose
+    implementation ("androidx.camera:camera-view:1.2.3")
+
+    // Для ImageAnalysis
+    implementation ("androidx.camera:camera-lifecycle:1.2.3")
 }

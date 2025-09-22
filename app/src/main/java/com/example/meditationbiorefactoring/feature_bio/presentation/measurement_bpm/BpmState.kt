@@ -1,0 +1,12 @@
+package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_bpm
+
+import com.example.meditationbiorefactoring.feature_bio.presentation.common.ErrorType
+
+data class BpmState(
+    val isLoading: Boolean = false,
+    val isMeasuring: Boolean = false,
+    val isMeasured: Boolean = false,
+    val value: String = "",
+    val status: String = "",
+    val error: ErrorType? = null
+)

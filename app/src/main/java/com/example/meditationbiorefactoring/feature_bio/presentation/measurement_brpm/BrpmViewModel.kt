@@ -5,8 +5,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.meditationbiorefactoring.feature_bio.presentation.common.BioEvent
-import com.example.meditationbiorefactoring.feature_bio.presentation.common.BioState
 import com.example.meditationbiorefactoring.feature_bio.presentation.common.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -17,23 +15,23 @@ import kotlin.random.Random
 @HiltViewModel
 class BrpmViewModel @Inject constructor(): ViewModel() {
 
-    private val _state = mutableStateOf(BioState())
-    val state: State<BioState> = _state
+    private val _state = mutableStateOf(BrpmState())
+    val state: State<BrpmState> = _state
 
-    fun onEvent(event: BioEvent) {
+    fun onEvent(event: BrpmEvent) {
         when(event) {
-            is BioEvent.Start -> {
+            is BrpmEvent.Start -> {
                 startMeasurement()
             }
-            is BioEvent.Retry -> {
-                _state.value = BioState()
+            is BrpmEvent.Retry -> {
+                _state.value = BrpmState()
                 startMeasurement()
             }
-            is BioEvent.Reset -> {
-                _state.value = BioState()
+            is BrpmEvent.Reset -> {
+                _state.value = BrpmState()
                 startMeasurement()
             }
-            is BioEvent.Error -> {
+            is BrpmEvent.Error -> {
                 setError(event.error)
             }
         }

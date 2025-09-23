@@ -19,6 +19,8 @@ class BpmViewModel @Inject constructor(
     private val _state = mutableStateOf(BpmState())
     val state: State<BpmState> = _state
 
+    val progress = mutableStateOf(0f)
+
     fun onEvent(event: BpmEvent) {
         when (event) {
             is BpmEvent.Start -> {

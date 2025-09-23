@@ -64,10 +64,11 @@ fun BpmScreen(
                     modifier = Modifier.fillMaxSize(),
                     onFrameCaptured = { buffer ->
                         viewModel.onEvent(BpmEvent.FrameCaptured(buffer))
-                    }
+                    },
+                    enableTorch = true,
                 )
                 LinearProgressIndicator(
-                    progress = { progress.value },
+                    progress = progress.value,
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)

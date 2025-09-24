@@ -1,8 +1,6 @@
 package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_bpm
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,23 +25,6 @@ fun BpmScreen(
     viewModel: BpmViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
-
-    val progress = remember { Animatable(0f) }
-
-    LaunchedEffect(state.isMeasuring) {
-        if (state.isMeasuring) {
-            progress.snapTo(0f)
-            progress.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(
-                    durationMillis = 20000,
-                    easing = LinearEasing
-                )
-            )
-        } else {
-            progress.snapTo(0f)
-        }
-    }
 
     Box(
         modifier = Modifier
@@ -65,14 +44,14 @@ fun BpmScreen(
                     onFrameCaptured = { buffer ->
                         viewModel.onEvent(BpmEvent.FrameCaptured(buffer))
                     },
-                    enableTorch = true,
+                    enableTorch = state.isTorchEnabled
                 )
                 LinearProgressIndicator(
-                    progress = progress.value,
+                    progress = { viewModel.progress.floatValue },
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
-                        .padding(25.dp)
+                        .padding(25.dp),
                 )
             }
 
@@ -83,8 +62,9 @@ fun BpmScreen(
                     type = "BPM",
                     buttonDescription = "To BRPM",
                     onNavigateTo = onNavigateToBrpm,
-                    onRestart = { viewModel.onEvent(BpmEvent.Reset) }
+                    onRestart = { viewModel.onEvent(BpmEvent.Retry) }
                 )
+
             }
 
             state.error != null -> {

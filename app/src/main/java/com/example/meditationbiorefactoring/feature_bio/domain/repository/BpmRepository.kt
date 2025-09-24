@@ -1,7 +1,7 @@
 package com.example.meditationbiorefactoring.feature_bio.domain.repository
 
-import com.example.meditationbiorefactoring.feature_bio.domain.model.BpmResult
+import com.example.meditationbiorefactoring.feature_bio.domain.model.BpmAnalysis
 
 interface BpmRepository {
-    suspend fun processFrame(buffer: ByteArray): BpmResult
+    suspend fun processFrame(buffer: ByteArray): BpmAnalysis
 }

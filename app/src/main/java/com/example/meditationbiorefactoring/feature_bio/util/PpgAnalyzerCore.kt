@@ -1,6 +1,7 @@
 package com.example.meditationbiorefactoring.feature_bio.util
 
 import android.util.Log
+import com.example.meditationbiorefactoring.feature_bio.domain.model.BpmAnalysis
 import com.example.meditationbiorefactoring.feature_bio.domain.model.BpmResult
 
 class PpgAnalyzerCore {
@@ -9,7 +10,7 @@ class PpgAnalyzerCore {
     private val timestamps = mutableListOf<Long>()
     private val maxBufferSize = 200
 
-    fun analyzeFrame(buffer: ByteArray): BpmResult {
+    fun analyzeFrame(buffer: ByteArray): BpmAnalysis {
         val avg = buffer.map { it.toInt() and 0xFF }.average()
         values.add(avg)
         timestamps.add(System.currentTimeMillis()) // зберігаємо час кадру
@@ -20,17 +21,19 @@ class PpgAnalyzerCore {
             timestamps.removeAt(0)
         }
 
+        val progress = values.size / maxBufferSize.toFloat()
+
         return if (values.size == maxBufferSize) {
             val bpm = computeBpm(values, timestamps)
             if (bpm in 40..150) {
                 Log.d("PpgAnalyzerCore", "BPM=$bpm")
-                BpmResult.Success(bpm)
+                BpmAnalysis (BpmResult.Success(bpm), progress = 1f)
             } else {
                 Log.w("PpgAnalyzerCore", "Invalid BPM=$bpm")
-                BpmResult.Invalid
+                BpmAnalysis (BpmResult.Invalid, progress)
             }
         } else {
-            BpmResult.Error // ще недостатньо даних
+            BpmAnalysis (BpmResult.Error, progress) // ще недостатньо даних
         }
     }
 

@@ -4,20 +4,26 @@ import android.graphics.ImageFormat
 import android.util.Log
 import android.util.Size
 import androidx.annotation.OptIn
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.example.meditationbiorefactoring.feature_bio.domain.model.BpmResult
 import com.example.meditationbiorefactoring.feature_bio.util.PpgAnalyzerCore
 import com.example.meditationbiorefactoring.feature_bio.util.getCameraProvider
 
@@ -31,7 +37,8 @@ fun CameraPreview(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember { PreviewView(context) }
-    val testAnalyzer = remember { PpgAnalyzerCore() } // створюємо 1 раз
+    val testAnalyzer = remember { PpgAnalyzerCore() }
+    var camera by remember { mutableStateOf<Camera?>(null) }
 
     AndroidView(
         modifier = modifier,
@@ -70,16 +77,31 @@ fun CameraPreview(
         val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
         try {
             cameraProvider.unbindAll()
-            val camera = cameraProvider.bindToLifecycle(
+            camera = cameraProvider.bindToLifecycle(
                 lifecycleOwner,
                 cameraSelector,
                 preview,
                 imageAnalysis
             )
-            camera.cameraControl.enableTorch(enableTorch)
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e("CameraPreview", "Camera bind failed", e)
+        }
+    }
+
+    LaunchedEffect(enableTorch, camera) {
+        camera?.cameraControl?.enableTorch(enableTorch)
+    }
+
+    DisposableEffect(lifecycleOwner, camera) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME && enableTorch) {
+                camera?.cameraControl?.enableTorch(true)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 }

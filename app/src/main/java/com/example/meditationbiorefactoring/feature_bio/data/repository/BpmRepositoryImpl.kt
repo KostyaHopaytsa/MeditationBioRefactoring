@@ -1,14 +1,19 @@
 package com.example.meditationbiorefactoring.feature_bio.data.repository
 
-import com.example.meditationbiorefactoring.feature_bio.domain.model.BpmAnalysis
+import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementAnalysis
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.BpmRepository
 import com.example.meditationbiorefactoring.feature_bio.util.PpgAnalyzerCore
+import javax.inject.Inject
 
-class BpmRepositoryImpl : BpmRepository {
+class BpmRepositoryImpl @Inject constructor(
+    private val analyzer: PpgAnalyzerCore
+) : BpmRepository {
 
-    private val analyzer = PpgAnalyzerCore()
-
-    override suspend fun processFrame(buffer: ByteArray): BpmAnalysis {
+    override suspend fun processFrame(buffer: ByteArray): MeasurementAnalysis {
         return analyzer.analyzeFrame(buffer)
+    }
+
+    override suspend fun reset() {
+        analyzer.reset()
     }
 }

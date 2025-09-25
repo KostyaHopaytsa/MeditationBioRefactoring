@@ -1,19 +1,20 @@
 package com.example.meditationbiorefactoring.feature_bio.util
 
 import android.util.Log
-import com.example.meditationbiorefactoring.feature_bio.domain.model.BpmAnalysis
-import com.example.meditationbiorefactoring.feature_bio.domain.model.BpmResult
+import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementAnalysis
+import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementResult
+import javax.inject.Inject
 
-class PpgAnalyzerCore {
+class PpgAnalyzerCore @Inject constructor(){
 
     private val values = mutableListOf<Double>()
     private val timestamps = mutableListOf<Long>()
     private val maxBufferSize = 200
 
-    fun analyzeFrame(buffer: ByteArray): BpmAnalysis {
+    fun analyzeFrame(buffer: ByteArray): MeasurementAnalysis {
         val avg = buffer.map { it.toInt() and 0xFF }.average()
         values.add(avg)
-        timestamps.add(System.currentTimeMillis()) // зберігаємо час кадру
+        timestamps.add(System.currentTimeMillis())
         Log.d("TEST", "Frame avg=$avg bufferSize=${values.size}")
 
         if (values.size > maxBufferSize) {
@@ -27,13 +28,13 @@ class PpgAnalyzerCore {
             val bpm = computeBpm(values, timestamps)
             if (bpm in 40..150) {
                 Log.d("PpgAnalyzerCore", "BPM=$bpm")
-                BpmAnalysis (BpmResult.Success(bpm), progress = 1f)
+                MeasurementAnalysis (MeasurementResult.Success(bpm), progress = 1f)
             } else {
                 Log.w("PpgAnalyzerCore", "Invalid BPM=$bpm")
-                BpmAnalysis (BpmResult.Invalid, progress)
+                MeasurementAnalysis (MeasurementResult.Invalid, progress)
             }
         } else {
-            BpmAnalysis (BpmResult.Error, progress) // ще недостатньо даних
+            MeasurementAnalysis (MeasurementResult.Error, progress) // ще недостатньо даних
         }
     }
 
@@ -49,5 +50,10 @@ class PpgAnalyzerCore {
         val bpm = (peaks * 60 / durationSec).toInt()
         Log.d("PpgAnalyzerCore", "Peaks=$peaks durationSec=$durationSec bpm=$bpm")
         return bpm
+    }
+
+    fun reset() {
+        values.clear()
+        Log.d("useCase","Use case is run")
     }
 }

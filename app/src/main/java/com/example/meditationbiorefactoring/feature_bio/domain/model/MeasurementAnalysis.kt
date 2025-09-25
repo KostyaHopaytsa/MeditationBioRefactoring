@@ -1,6 +1,6 @@
 package com.example.meditationbiorefactoring.feature_bio.domain.model
 
-data class BpmAnalysis(
-    val result: BpmResult,
+data class MeasurementAnalysis(
+    val result: MeasurementResult,
     val progress: Float
 )

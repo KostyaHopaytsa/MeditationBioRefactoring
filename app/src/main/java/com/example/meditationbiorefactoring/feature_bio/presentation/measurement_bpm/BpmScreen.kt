@@ -29,8 +29,7 @@ fun BpmScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .navigationBarsPadding()
-            .padding(20.dp),
+            .navigationBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
         when {
@@ -47,7 +46,7 @@ fun BpmScreen(
                     enableTorch = state.isTorchEnabled
                 )
                 LinearProgressIndicator(
-                    progress = { viewModel.progress.floatValue },
+                    progress = { viewModel.progress.value },
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)

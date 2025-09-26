@@ -17,6 +17,7 @@ import com.example.meditationbiorefactoring.feature_bio.presentation.components.
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementStart
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementResult
 import com.example.meditationbiorefactoring.feature_bio.presentation.measurement_bpm.BpmEvent
+import com.example.meditationbiorefactoring.feature_bio.presentation.measurement_brpm.components.BrpmSensorListener
 
 @Composable
 fun BrpmScreen(
@@ -37,7 +38,16 @@ fun BrpmScreen(
                 CircularProgressIndicator()
             }
             state.isMeasuring -> {
-
+                BrpmSensorListener { z ->
+                    viewModel.onEvent(BrpmEvent.DataCaptured(z))
+                }
+                LinearProgressIndicator(
+                    progress = { viewModel.progress.value },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .padding(25.dp),
+                )
             }
             state.isMeasured -> {
                 MeasurementResult(

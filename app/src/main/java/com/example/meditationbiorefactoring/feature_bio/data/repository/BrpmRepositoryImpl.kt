@@ -5,7 +5,7 @@ import com.example.meditationbiorefactoring.feature_bio.domain.repository.BrpmRe
 import com.example.meditationbiorefactoring.feature_bio.util.BreathAnalyzerCore
 import javax.inject.Inject
 
-class BreathRepositoryImpl @Inject constructor(
+class BrpmRepositoryImpl @Inject constructor(
     private val analyzer: BreathAnalyzerCore
 ) : BrpmRepository {
 

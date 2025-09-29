@@ -1,92 +1,75 @@
 package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_siv
 
-import androidx.compose.animation.core.Animatable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.domain.use_case.ResetSivMeasurementUseCase
+import com.example.meditationbiorefactoring.feature_bio.domain.use_case.StartSivRecordingUseCase
+import com.example.meditationbiorefactoring.feature_bio.domain.use_case.StopSivAndAnalyzeUseCase
 import com.example.meditationbiorefactoring.feature_bio.presentation.common.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
-class SivViewModel @Inject constructor(): ViewModel() {
+class SivViewModel @Inject constructor(
+    private val startSivRecordingUseCase: StartSivRecordingUseCase,
+    private val stopSivAndAnalyzeUseCase: StopSivAndAnalyzeUseCase,
+    private val resetSivMeasurementUseCase: ResetSivMeasurementUseCase
+): ViewModel() {
 
     private val _state = mutableStateOf(SivState())
     val state: State<SivState> = _state
 
     fun onEvent(event: SivEvent) {
-        when(event) {
+        when (event) {
             is SivEvent.Start -> {
-                startMeasurement()
+                viewModelScope.launch {
+                    startSivRecordingUseCase()
+                    _state.value = _state.value.copy(isMeasuring = true)
+                }
+            }
+            is SivEvent.Stop -> {
+                viewModelScope.launch {
+                    val analysis = stopSivAndAnalyzeUseCase()
+                    when (val result = analysis.result) {
+                        is MeasurementResult.Success -> {
+                            _state.value = _state.value.copy(
+                                isMeasuring = false,
+                                isMeasured = true,
+                                value = result.value.toString(),
+                                status = if (result.value < 0.03) "low"
+                                else if (result.value > 0.09) "high"
+                                else "normal",
+                            )
+                        }
+                        is MeasurementResult.Invalid -> {
+                            _state.value = _state.value.copy(
+                                error = ErrorType.MeasureError
+                            )
+                        }
+                        is MeasurementResult.Error -> {
+                            _state.value = _state.value.copy(
+                                error = ErrorType.UnknownError
+                            )
+                        }
+                    }
+                }
             }
             is SivEvent.Retry -> {
-                _state.value = SivState()
-                startMeasurement()
-            }
-            is SivEvent.Reset -> {
-                _state.value = SivState()
-                startMeasurement()
+                viewModelScope.launch {
+                    resetSivMeasurementUseCase()
+                    _state.value = SivState()
+                }
             }
             is SivEvent.Error -> {
-                setError(event.error)
-            }
-        }
-    }
-
-    private fun startMeasurement() {
-        _state.value =  _state.value.copy(isLoading = true)
-
-        viewModelScope.launch {
-            try {
-
-                delay(1000)
-
-                if(Random.nextBoolean()) {
-                    throw RuntimeException("Micro failed")
-                }
-
-                _state.value = _state.value.copy(
-                    isLoading = false,
-                    isMeasuring = true,
-                )
-
-                delay(2000)
-
-                if(Random.nextBoolean()) {
-                    throw RuntimeException("Measurement failed")
-                }
-
                 _state.value = _state.value.copy(
                     isMeasuring = false,
-                    isMeasured= true,
-                    value = "20",
-                    status = "low",
-                )
-            } catch (e: Exception) {
-                val errorType = when (e.message) {
-                    "Micro failed" -> ErrorType.SensorError
-                    "Measurement failed" -> ErrorType.MeasureError
-                    else -> ErrorType.UnknownError
-                }
-
-                _state.value = _state.value.copy(
-                    isLoading = false,
-                    isMeasuring = false,
-                    error = errorType
+                    error = event.error,
                 )
             }
         }
-    }
-
-    private fun setError(error: ErrorType) {
-        _state.value = _state.value.copy(
-            isLoading = false,
-            isMeasuring = false,
-            error = error
-        )
     }
 }

@@ -4,8 +4,9 @@ import com.example.meditationbiorefactoring.feature_bio.data.local.MeasurementDa
 import com.example.meditationbiorefactoring.feature_bio.domain.model.Measurement
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.MeasurementRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class MeasurementRepositoryImpl(
+class MeasurementRepositoryImpl @Inject constructor(
     private val dao: MeasurementDao
 ) : MeasurementRepository {
     override fun getMeasurements(): Flow<List<Measurement>> {
@@ -20,8 +21,8 @@ class MeasurementRepositoryImpl(
         dao.insertMeasurement(measurement)
     }
 
-    override suspend fun deleteMeasurement(measurement: Measurement) {
-        dao.deleteMeasurement(measurement)
-    }
+//    override suspend fun deleteMeasurement(measurement: Measurement) {
+//        dao.deleteMeasurement(measurement)
+//    }
 
 }

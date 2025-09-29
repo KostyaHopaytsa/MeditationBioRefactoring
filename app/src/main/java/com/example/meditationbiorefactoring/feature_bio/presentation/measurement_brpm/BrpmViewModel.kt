@@ -65,7 +65,9 @@ class BrpmViewModel @Inject constructor(
                         isMeasuring = false,
                         isMeasured = true,
                         value = result.value.toString(),
-                        status = if (result.value < 12) "low" else if (result.value > 25) "high" else "normal",
+                        status = if (result.value < 12) "low"
+                        else if (result.value > 25) "high"
+                        else "normal",
                     )
                 }
                 is MeasurementResult.Invalid -> {

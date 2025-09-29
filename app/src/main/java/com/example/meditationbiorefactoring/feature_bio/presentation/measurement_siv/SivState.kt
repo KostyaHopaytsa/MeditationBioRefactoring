@@ -8,6 +8,5 @@ data class SivState(
     val isMeasured: Boolean = false,
     val value: String = "",
     val status: String = "",
-    val progress: Float = 0f,
     val error: ErrorType? = null
 )

@@ -20,16 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.meditationbiorefactoring.feature_bio.domain.model.Measurement
 
 
 @Composable
 fun MeasureItem(
     onNavigateTo: () -> Unit,
-    date: String,
-    bpm: String,
-    brpm: String,
-    siv: String,
-    stress: String
+    measurement: Measurement
 ) {
     Row(
         modifier = Modifier
@@ -46,11 +43,11 @@ fun MeasureItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column {
-            Text(text = date, fontSize = 15.sp)
-            Text(text = "BPM: $bpm", fontSize = 15.sp)
-            Text(text = "BRPM: $brpm", fontSize = 15.sp)
-            Text(text = "SIV: $siv", fontSize = 15.sp)
-            Text(text = "Stress: $stress", fontSize = 15.sp)
+            Text(text = measurement.timestamp, fontSize = 15.sp)
+            Text(text = "BPM: ${measurement.bpm}", fontSize = 15.sp)
+            Text(text = "BRPM: ${measurement.brpm}", fontSize = 15.sp)
+            Text(text = "SIV: ${measurement.siv}", fontSize = 15.sp)
+            Text(text = "Stress: ${measurement.stress}", fontSize = 15.sp)
         }
         IconButton(onClick = onNavigateTo) {
             Icon(

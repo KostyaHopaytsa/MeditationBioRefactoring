@@ -2,6 +2,7 @@ package com.example.meditationbiorefactoring.feature_bio.presentation.bio_histor
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -12,16 +13,13 @@ fun BioHistoryScreen(
     onNavigateToMusic: () -> Unit,
     viewModel: BioHistoryViewModel = hiltViewModel()
 ) {
+    val state = viewModel.state.value
+
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(10) {
-            //all string hardcoded and must be implemented later
+        items(state.measurements) { measurement ->
             MeasureItem(
                 onNavigateTo = onNavigateToMusic,
-                date = "12.09.2025 11:00",
-                bpm = "60 - low",
-                brpm = "10 - low",
-                siv = "20 - low",
-                stress = "low"
+                measurement = measurement
             )
         }
     }

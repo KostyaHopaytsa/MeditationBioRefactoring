@@ -18,31 +18,47 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            if (isGranted) {
+    private val requestPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val cameraGranted = permissions[Manifest.permission.CAMERA] ?: false
+            val micGranted = permissions[Manifest.permission.RECORD_AUDIO] ?: false
+
+            if (cameraGranted && micGranted) {
                 launchApp()
             } else {
                 Toast.makeText(
                     this,
-                    "Camera permission is required",
+                    "Camera and microphone permissions are required",
                     Toast.LENGTH_LONG
                 ).show()
-                // Тут можна показати заглушку з кнопкою "Retry"
             }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val neededPermissions = mutableListOf<String>()
+
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
+            neededPermissions.add(Manifest.permission.CAMERA)
+        }
+
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            neededPermissions.add(Manifest.permission.RECORD_AUDIO)
+        }
+
+        if (neededPermissions.isEmpty()) {
             launchApp()
         } else {
-            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            requestPermissionsLauncher.launch(neededPermissions.toTypedArray())
         }
     }
 
@@ -58,3 +74,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+

@@ -1,11 +1,19 @@
 package com.example.meditationbiorefactoring.di
 
+import android.app.Application
+import androidx.room.Room
+import com.example.meditationbiorefactoring.feature_bio.data.local.MeasurementDatabase
 import com.example.meditationbiorefactoring.feature_bio.data.repository.BpmRepositoryImpl
 import com.example.meditationbiorefactoring.feature_bio.data.repository.BrpmRepositoryImpl
+import com.example.meditationbiorefactoring.feature_bio.data.repository.MeasurementRepositoryImpl
+import com.example.meditationbiorefactoring.feature_bio.data.repository.SivRepositoryImpl
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.BpmRepository
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.BrpmRepository
+import com.example.meditationbiorefactoring.feature_bio.domain.repository.MeasurementRepository
+import com.example.meditationbiorefactoring.feature_bio.domain.repository.SivRepository
 import com.example.meditationbiorefactoring.feature_bio.util.BreathAnalyzerCore
 import com.example.meditationbiorefactoring.feature_bio.util.PpgAnalyzerCore
+import com.example.meditationbiorefactoring.feature_bio.util.SivAnalyzerCore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,6 +34,10 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideSivAnalyzer(): SivAnalyzerCore = SivAnalyzerCore()
+
+    @Provides
+    @Singleton
     fun provideBpmRepository(
         analyzer: PpgAnalyzerCore
     ): BpmRepository = BpmRepositoryImpl(analyzer)
@@ -35,4 +47,26 @@ object AppModule {
     fun provideBrpmRepository(
         analyzer: BreathAnalyzerCore
     ): BrpmRepository = BrpmRepositoryImpl(analyzer)
+
+    @Provides
+    @Singleton
+    fun provideSivRepository(
+        analyzer: SivAnalyzerCore
+    ): SivRepository = SivRepositoryImpl(analyzer)
+
+    @Provides
+    @Singleton
+    fun provideMeasurementDatabase(app: Application): MeasurementDatabase {
+        return Room.databaseBuilder(
+            app,
+            MeasurementDatabase::class.java,
+            MeasurementDatabase.DATABASE_NAME
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMeasurementRepository(db: MeasurementDatabase): MeasurementRepository {
+        return MeasurementRepositoryImpl(db.measurementDao)
+    }
 }

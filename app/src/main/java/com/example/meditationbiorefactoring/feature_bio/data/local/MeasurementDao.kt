@@ -20,6 +20,6 @@ interface MeasurementDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMeasurement(measurement: Measurement)
 
-    @Delete
-    suspend fun deleteMeasurement(measurement: Measurement)
+//    @Delete
+//    suspend fun deleteMeasurement(measurement: Measurement)
 }

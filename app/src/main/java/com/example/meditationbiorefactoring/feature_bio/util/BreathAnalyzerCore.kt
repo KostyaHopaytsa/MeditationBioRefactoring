@@ -22,7 +22,7 @@ class BreathAnalyzerCore @Inject constructor() {
         return if (zValues.size == bufferSize) {
             val brpm = computeBrpm(zValues)
             if (brpm in 5..40) {
-                MeasurementAnalysis(MeasurementResult.Success(brpm), 1f)
+                MeasurementAnalysis(MeasurementResult.Success(brpm.toDouble()), 1f)
             } else {
                 MeasurementAnalysis(MeasurementResult.Invalid, progress)
             }

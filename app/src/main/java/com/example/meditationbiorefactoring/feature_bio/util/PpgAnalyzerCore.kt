@@ -28,13 +28,13 @@ class PpgAnalyzerCore @Inject constructor(){
             val bpm = computeBpm(values, timestamps)
             if (bpm in 40..150) {
                 Log.d("PpgAnalyzerCore", "BPM=$bpm")
-                MeasurementAnalysis (MeasurementResult.Success(bpm), progress = 1f)
+                MeasurementAnalysis (MeasurementResult.Success(bpm.toDouble()), progress = 1f)
             } else {
                 Log.w("PpgAnalyzerCore", "Invalid BPM=$bpm")
                 MeasurementAnalysis (MeasurementResult.Invalid, progress)
             }
         } else {
-            MeasurementAnalysis (MeasurementResult.Error, progress) // ще недостатньо даних
+            MeasurementAnalysis (MeasurementResult.Error, progress)
         }
     }
 

@@ -5,10 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Measurement(
-    val timestamp: String,
-    val bpm: Int,
-    val brpm: Int,
-    val siv: Int,
+    val timestamp: Long,
+    val bpm: Double,
+    val brpm: Double,
+    val siv: Double,
     val stress: String,
     @PrimaryKey val id: Int? = null
 )

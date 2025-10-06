@@ -1,6 +1,6 @@
 package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_brpm
 
-import com.example.meditationbiorefactoring.feature_bio.presentation.common.ErrorType
+import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
 
 sealed class BrpmEvent {
     data object Start : BrpmEvent()

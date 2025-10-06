@@ -1,6 +1,6 @@
 package com.example.meditationbiorefactoring.feature_bio.data.repository
 
-import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementAnalysis
+import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementAnalysis
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.BrpmRepository
 import com.example.meditationbiorefactoring.feature_bio.util.BreathAnalyzerCore
 import javax.inject.Inject

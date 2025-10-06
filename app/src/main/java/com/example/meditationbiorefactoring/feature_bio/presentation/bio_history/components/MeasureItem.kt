@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.meditationbiorefactoring.feature_bio.domain.model.Measurement
+import com.example.meditationbiorefactoring.feature_bio.presentation.util.toReadableDate
 
 
 @Composable
@@ -43,7 +44,7 @@ fun MeasureItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column {
-            Text(text = measurement.timestamp, fontSize = 15.sp)
+            Text(text = measurement.timestamp.toReadableDate(), fontSize = 15.sp)
             Text(text = "BPM: ${measurement.bpm}", fontSize = 15.sp)
             Text(text = "BRPM: ${measurement.brpm}", fontSize = 15.sp)
             Text(text = "SIV: ${measurement.siv}", fontSize = 15.sp)

@@ -2,6 +2,8 @@ package com.example.meditationbiorefactoring.feature_bio.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.meditationbiorefactoring.feature_bio.domain.model.Measurement
 
 @Database(

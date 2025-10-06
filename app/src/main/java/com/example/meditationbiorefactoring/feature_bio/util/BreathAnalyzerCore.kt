@@ -1,7 +1,7 @@
 package com.example.meditationbiorefactoring.feature_bio.util
 
-import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementAnalysis
-import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementAnalysis
+import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min

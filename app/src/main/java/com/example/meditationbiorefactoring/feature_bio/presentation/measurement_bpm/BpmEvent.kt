@@ -1,6 +1,6 @@
 package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_bpm
 
-import com.example.meditationbiorefactoring.feature_bio.presentation.common.ErrorType
+import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
 
 sealed class BpmEvent {
     data object Start : BpmEvent()

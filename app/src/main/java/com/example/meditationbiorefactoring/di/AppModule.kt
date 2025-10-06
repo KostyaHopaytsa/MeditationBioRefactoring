@@ -7,10 +7,12 @@ import com.example.meditationbiorefactoring.feature_bio.data.repository.BpmRepos
 import com.example.meditationbiorefactoring.feature_bio.data.repository.BrpmRepositoryImpl
 import com.example.meditationbiorefactoring.feature_bio.data.repository.MeasurementRepositoryImpl
 import com.example.meditationbiorefactoring.feature_bio.data.repository.SivRepositoryImpl
+import com.example.meditationbiorefactoring.feature_bio.data.repository.StressAggregatorRepositoryImpl
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.BpmRepository
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.BrpmRepository
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.MeasurementRepository
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.SivRepository
+import com.example.meditationbiorefactoring.feature_bio.domain.repository.StressAggregatorRepository
 import com.example.meditationbiorefactoring.feature_bio.util.BreathAnalyzerCore
 import com.example.meditationbiorefactoring.feature_bio.util.PpgAnalyzerCore
 import com.example.meditationbiorefactoring.feature_bio.util.SivAnalyzerCore
@@ -38,21 +40,21 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideBpmRepository(
-        analyzer: PpgAnalyzerCore
-    ): BpmRepository = BpmRepositoryImpl(analyzer)
+    fun provideBpmRepository(analyzer: PpgAnalyzerCore): BpmRepository {
+        return BpmRepositoryImpl(analyzer)
+    }
 
     @Provides
     @Singleton
-    fun provideBrpmRepository(
-        analyzer: BreathAnalyzerCore
-    ): BrpmRepository = BrpmRepositoryImpl(analyzer)
+    fun provideBrpmRepository(analyzer: BreathAnalyzerCore): BrpmRepository {
+        return BrpmRepositoryImpl(analyzer)
+    }
 
     @Provides
     @Singleton
-    fun provideSivRepository(
-        analyzer: SivAnalyzerCore
-    ): SivRepository = SivRepositoryImpl(analyzer)
+    fun provideSivRepository(analyzer: SivAnalyzerCore): SivRepository {
+        return SivRepositoryImpl(analyzer)
+    }
 
     @Provides
     @Singleton
@@ -68,5 +70,15 @@ object AppModule {
     @Singleton
     fun provideMeasurementRepository(db: MeasurementDatabase): MeasurementRepository {
         return MeasurementRepositoryImpl(db.measurementDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStressAggregatorRepository(
+        measurementRepository: MeasurementRepository
+    ): StressAggregatorRepository {
+        return StressAggregatorRepositoryImpl(
+            measurementRepository
+        )
     }
 }

@@ -1,4 +1,4 @@
-package com.example.meditationbiorefactoring.feature_bio.presentation.common
+package com.example.meditationbiorefactoring.feature_bio.presentation.util
 
 sealed class ErrorType {
     data object SensorError : ErrorType()

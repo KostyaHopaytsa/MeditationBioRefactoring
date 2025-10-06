@@ -1,6 +1,6 @@
 package com.example.meditationbiorefactoring.feature_bio.domain.use_case
 
-import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementAnalysis
+import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementAnalysis
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.SivRepository
 import javax.inject.Inject
 

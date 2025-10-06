@@ -3,8 +3,8 @@ package com.example.meditationbiorefactoring.feature_bio.util
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.util.Log
-import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementAnalysis
-import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementAnalysis
+import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
 import android.media.MediaRecorder
 import kotlin.math.pow
 

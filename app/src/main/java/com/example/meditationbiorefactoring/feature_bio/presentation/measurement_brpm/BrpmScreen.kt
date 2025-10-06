@@ -12,11 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.meditationbiorefactoring.feature_bio.presentation.common.ErrorType
+import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementError
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementStart
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementResult
-import com.example.meditationbiorefactoring.feature_bio.presentation.measurement_bpm.BpmEvent
 import com.example.meditationbiorefactoring.feature_bio.presentation.measurement_brpm.components.BrpmSensorListener
 
 @Composable

@@ -1,8 +1,8 @@
 package com.example.meditationbiorefactoring.feature_bio.util
 
 import android.util.Log
-import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementAnalysis
-import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementAnalysis
+import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
 import javax.inject.Inject
 
 class PpgAnalyzerCore @Inject constructor(){

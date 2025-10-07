@@ -1,6 +1,7 @@
 package com.example.meditationbiorefactoring.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.example.meditationbiorefactoring.feature_bio.data.local.MeasurementDatabase
 import com.example.meditationbiorefactoring.feature_bio.data.repository.BpmRepositoryImpl
@@ -16,9 +17,12 @@ import com.example.meditationbiorefactoring.feature_bio.domain.repository.Stress
 import com.example.meditationbiorefactoring.feature_bio.util.BreathAnalyzerCore
 import com.example.meditationbiorefactoring.feature_bio.util.PpgAnalyzerCore
 import com.example.meditationbiorefactoring.feature_bio.util.SivAnalyzerCore
+import com.example.meditationbiorefactoring.feature_music.data.repository.MusicPlayerRepositoryImpl
+import com.example.meditationbiorefactoring.feature_music.domain.repository.MusicPlayerRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -80,5 +84,13 @@ object AppModule {
         return StressAggregatorRepositoryImpl(
             measurementRepository
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideMusicPlayerRepository(
+        @ApplicationContext context: Context
+    ): MusicPlayerRepository {
+        return MusicPlayerRepositoryImpl(context)
     }
 }

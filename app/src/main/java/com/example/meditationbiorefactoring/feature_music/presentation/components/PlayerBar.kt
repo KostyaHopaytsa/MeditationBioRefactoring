@@ -17,13 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.example.meditationbiorefactoring.feature_music.domain.model.Track
 
 @Composable
 fun PlayerBar(
-    image: ImageVector?,
-    title: String,
-    author: String,
-    isPlaying: Boolean,
+    track: Track,
     buttonIcon: ImageVector,
     onPlayPause: () -> Unit,
 ) {
@@ -39,9 +37,7 @@ fun PlayerBar(
             verticalArrangement = Arrangement.Bottom,
         ) {
             MusicItem(
-                image = image,
-                title = title,
-                author = author,
+                track = track,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)

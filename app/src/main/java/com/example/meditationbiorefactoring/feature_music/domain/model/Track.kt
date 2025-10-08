@@ -7,5 +7,4 @@ data class Track(
     val album: String?,
     val imageUrl: String?,
     val audioUrl: String,
-    val duration: Long
 )

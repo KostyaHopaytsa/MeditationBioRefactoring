@@ -3,11 +3,14 @@ package com.example.meditationbiorefactoring.feature_music.presentation
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -21,35 +24,34 @@ import com.example.meditationbiorefactoring.feature_music.presentation.component
 fun MusicScreen(viewModel: MusicViewModel = hiltViewModel()) {
     val state = viewModel.state.value
 
-    LazyColumn {
-        items(20) {
-            //all string hardcoded and must implemented later
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(state.tracks) { track ->
             MusicItem(
-                image = null,
-                title = "title",
-                author = "author",
+                track = track,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
                     .size(120.dp)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
-                        indication = LocalIndication.current,) {
+                        indication = LocalIndication.current,
+                    ) {
+                        viewModel.onEvent(MusicEvent.OnTrackClick(track))
                     }
             )
         }
     }
-    //state.currentTrack?.let {
+    state.currentTrack?.let {
         PlayerBar(
-            //all string hardcoded and must implemented later
-            image = null,
-            title = "title",
-            author = "author",
-            isPlaying = false,
-            buttonIcon = Icons.Default.PlayArrow,
+            track = it,
+            buttonIcon = if (state.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
             onPlayPause = {
-                /*implement later*/
+                if (state.isPlaying) {
+                    viewModel.onEvent(MusicEvent.Pause)
+                } else {
+                    viewModel.onEvent(MusicEvent.Resume)
+                }
             },
         )
-    //}
+    }
 }

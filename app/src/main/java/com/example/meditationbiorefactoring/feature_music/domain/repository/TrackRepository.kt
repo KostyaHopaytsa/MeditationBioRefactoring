@@ -1,7 +1,8 @@
 package com.example.meditationbiorefactoring.feature_music.domain.repository
 
 import com.example.meditationbiorefactoring.feature_music.domain.model.Track
+import kotlinx.coroutines.flow.Flow
 
 interface TrackRepository {
-    suspend fun getTracksByTag(tag: String): List<Track>
+    fun getTracksByTag(tag: String): Flow<List<Track>>
 }

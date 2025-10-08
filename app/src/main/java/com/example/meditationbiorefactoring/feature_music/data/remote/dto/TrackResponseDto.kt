@@ -1,7 +1,7 @@
 package com.example.meditationbiorefactoring.feature_music.data.remote.dto
 
 import com.example.meditationbiorefactoring.feature_music.domain.model.Track
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
 
 data class TrackResponseDto(
     val results: List<TrackDto>
@@ -10,10 +10,11 @@ data class TrackResponseDto(
 data class TrackDto(
     val id: String,
     val name: String,
-    @Json(name = "artist_name")
+    @SerializedName("artist_name")
     val artistName: String,
-    @Json(name = "album_name")
+    @SerializedName("album_name")
     val albumName: String?,
+    @SerializedName("album_image")
     val image: String?,
     val audio: String
 )
@@ -25,6 +26,6 @@ fun TrackDto.toTrack(): Track {
         artist = artistName,
         album = albumName,
         imageUrl = image,
-        audioUrl = audio
+        audioUrl = audio,
     )
 }

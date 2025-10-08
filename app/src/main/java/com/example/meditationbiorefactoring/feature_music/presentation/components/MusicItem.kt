@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,12 +21,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.example.meditationbiorefactoring.feature_music.domain.model.Track
 
 @Composable
 fun MusicItem(
-    image: ImageVector?,
-    title: String,
-    author: String,
+    track: Track,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -40,20 +41,20 @@ fun MusicItem(
                     shape = RoundedCornerShape(10.dp)
                 )
                 .size(100.dp),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
-            Image(
-                image ?: Icons.Default.Warning,
-                contentDescription = "music image",
+            AsyncImage(
+                track.imageUrl ?: Icons.Default.Warning,
+                contentDescription = "track image",
                 modifier = Modifier
-                    .size(50.dp)
+                    .fillMaxSize()
             )
         }
         Column(
             modifier = Modifier.padding(start = 16.dp)
         ) {
-            Text(text = title, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
-            Text(text = author, fontSize = 15.sp)
+            Text(text = track.title, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+            Text(text = track.artist, fontSize = 15.sp)
         }
     }
 }

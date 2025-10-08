@@ -3,6 +3,7 @@ package com.example.meditationbiorefactoring.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
+import com.example.meditationbiorefactoring.common.Constants
 import com.example.meditationbiorefactoring.feature_bio.data.local.MeasurementDatabase
 import com.example.meditationbiorefactoring.feature_bio.data.repository.BpmRepositoryImpl
 import com.example.meditationbiorefactoring.feature_bio.data.repository.BrpmRepositoryImpl
@@ -17,13 +18,18 @@ import com.example.meditationbiorefactoring.feature_bio.domain.repository.Stress
 import com.example.meditationbiorefactoring.feature_bio.util.BreathAnalyzerCore
 import com.example.meditationbiorefactoring.feature_bio.util.PpgAnalyzerCore
 import com.example.meditationbiorefactoring.feature_bio.util.SivAnalyzerCore
+import com.example.meditationbiorefactoring.feature_music.data.remote.JamendoApi
 import com.example.meditationbiorefactoring.feature_music.data.repository.MusicPlayerRepositoryImpl
+import com.example.meditationbiorefactoring.feature_music.data.repository.TrackRepositoryImpl
 import com.example.meditationbiorefactoring.feature_music.domain.repository.MusicPlayerRepository
+import com.example.meditationbiorefactoring.feature_music.domain.repository.TrackRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -92,5 +98,21 @@ object AppModule {
         @ApplicationContext context: Context
     ): MusicPlayerRepository {
         return MusicPlayerRepositoryImpl(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideJamendoApi(): JamendoApi {
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(JamendoApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrackRepository(api: JamendoApi): TrackRepository {
+        return TrackRepositoryImpl(api)
     }
 }

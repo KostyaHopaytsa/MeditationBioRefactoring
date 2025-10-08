@@ -12,7 +12,7 @@ interface JamendoApi {
         @Query("client_id") clientId: String = Constants.CLIENT_ID,
         @Query("tags") tag: String,
         @Query("format") format: String = "json",
-        @Query("limit") limit: Int = 10,
+        @Query("limit") limit: Int = 100,
         @Query("include") include: String = "musicinfo",
         @Query("audioformat") audioFormat: String = "mp32"
     ): TrackResponseDto

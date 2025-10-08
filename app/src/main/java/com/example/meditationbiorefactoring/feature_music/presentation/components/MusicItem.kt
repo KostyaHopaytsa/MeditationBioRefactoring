@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,7 +39,7 @@ fun MusicItem(
                 .border(
                     width = 2.dp,
                     color = Color.Black,
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RectangleShape
                 )
                 .size(100.dp),
             contentAlignment = Alignment.Center,

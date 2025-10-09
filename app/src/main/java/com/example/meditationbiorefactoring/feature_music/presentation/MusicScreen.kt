@@ -52,6 +52,7 @@ fun MusicScreen(viewModel: MusicViewModel = hiltViewModel()) {
                     viewModel.onEvent(MusicEvent.Resume)
                 }
             },
+            progress = state.progress
         )
     }
 }

@@ -24,6 +24,7 @@ fun PlayerBar(
     track: Track,
     buttonIcon: ImageVector,
     onPlayPause: () -> Unit,
+    progress: Float
 ) {
     Box(
         contentAlignment = Alignment.BottomStart
@@ -60,7 +61,8 @@ fun PlayerBar(
                     )
                 }
                 LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth()
+                    progress = { progress },
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }

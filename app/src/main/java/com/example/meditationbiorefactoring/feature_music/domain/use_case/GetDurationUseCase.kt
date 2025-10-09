@@ -6,7 +6,7 @@ import javax.inject.Inject
 class GetDurationUseCase @Inject constructor(
     private val repository: MusicPlayerRepository
 ) {
-    operator fun invoke() {
-        repository.getDuration()
+    operator fun invoke(): Long {
+        return repository.getDuration()
     }
 }

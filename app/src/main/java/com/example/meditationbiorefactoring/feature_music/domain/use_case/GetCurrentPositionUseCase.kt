@@ -6,7 +6,7 @@ import javax.inject.Inject
 class GetCurrentPositionUseCase @Inject constructor(
     private val repository: MusicPlayerRepository
 ) {
-    operator fun invoke() {
-        repository.getCurrentPosition()
+    operator fun invoke(): Long {
+        return repository.getCurrentPosition()
     }
 }

@@ -6,7 +6,7 @@ import javax.inject.Inject
 class IsPlayingUseCase @Inject constructor(
     private val repository: MusicPlayerRepository
 ) {
-    operator fun invoke() {
-        repository.isPlaying()
+    operator fun invoke(): Boolean {
+        return repository.isPlaying()
     }
 }

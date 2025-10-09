@@ -36,7 +36,6 @@ class BreathAnalyzerCore @Inject constructor() {
     }
 
     private fun computeBrpm(values: List<Float>): Int {
-        // Згладжування ковзним середнім
         val smooth = mutableListOf<Float>()
         for (i in values.indices) {
             val start = max(0, i - smoothingWindow)
@@ -45,7 +44,6 @@ class BreathAnalyzerCore @Inject constructor() {
             smooth.add(avg)
         }
 
-        // Пошук піків
         var peaks = 0
         var lastPeak = -minPeakDistance
         for (i in 1 until smooth.size - 1) {

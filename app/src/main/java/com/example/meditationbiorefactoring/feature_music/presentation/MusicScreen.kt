@@ -3,6 +3,7 @@ package com.example.meditationbiorefactoring.feature_music.presentation
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,8 +13,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,35 +28,50 @@ import com.example.meditationbiorefactoring.feature_music.presentation.component
 fun MusicScreen(viewModel: MusicViewModel = hiltViewModel()) {
     val state = viewModel.state.value
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(state.tracks) { track ->
-            MusicItem(
-                track = track,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
-                    .size(120.dp)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = LocalIndication.current,
-                    ) {
-                        viewModel.onEvent(MusicEvent.OnTrackClick(track))
+    if (state.isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ){
+            CircularProgressIndicator()
+        }
+    } else {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(state.tracks) { track ->
+                MusicItem(
+                    track = track,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                        .size(120.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = LocalIndication.current,
+                        ) {
+                            viewModel.onEvent(MusicEvent.TrackClick(track))
+                        }
+                )
+            }
+        }
+        state.currentTrack?.let {
+            PlayerBar(
+                track = it,
+                progress = state.progress,
+                buttonIcon = if (state.isPlaying) Icons.Default.Pause
+                    else if(state.isEnd) Icons.Default.Replay
+                    else Icons.Default.PlayArrow,
+                onPlayControl = {
+                    if (state.isPlaying) {
+                        viewModel.onEvent(MusicEvent.Pause)
+                    } else {
+                        viewModel.onEvent(MusicEvent.Resume)
                     }
+                },
+                onSeek = { newProgress ->
+                    val posMs = (newProgress * state.duration).toLong()
+                    viewModel.onEvent(MusicEvent.SeekTo(positionMs = posMs))
+                }
             )
         }
-    }
-    state.currentTrack?.let {
-        PlayerBar(
-            track = it,
-            buttonIcon = if (state.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-            onPlayPause = {
-                if (state.isPlaying) {
-                    viewModel.onEvent(MusicEvent.Pause)
-                } else {
-                    viewModel.onEvent(MusicEvent.Resume)
-                }
-            },
-            progress = state.progress
-        )
     }
 }

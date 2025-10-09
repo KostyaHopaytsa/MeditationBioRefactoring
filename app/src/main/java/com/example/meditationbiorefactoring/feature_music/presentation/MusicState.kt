@@ -4,8 +4,11 @@ import com.example.meditationbiorefactoring.feature_music.domain.model.Track
 
 data class MusicState(
     val tracks: List<Track> = emptyList(),
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val currentTrack: Track? = null,
     val isPlaying: Boolean = false,
-    val progress: Float = 0f
+    val isEnd: Boolean = false,
+    val progress: Float = 0f,
+    val duration: Float = 0f,
+    val error: String? = null
 )

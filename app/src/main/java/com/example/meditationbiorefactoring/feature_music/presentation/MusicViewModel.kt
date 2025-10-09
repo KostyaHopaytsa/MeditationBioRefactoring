@@ -12,10 +12,15 @@ import com.example.meditationbiorefactoring.feature_music.domain.use_case.IsPlay
 import com.example.meditationbiorefactoring.feature_music.domain.use_case.PauseUseCase
 import com.example.meditationbiorefactoring.feature_music.domain.use_case.PlayUseCase
 import com.example.meditationbiorefactoring.feature_music.domain.use_case.ResumeUseCase
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.SeekToUseCase
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.StopUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,67 +32,112 @@ class MusicViewModel @Inject constructor(
     private val resumeUseCase: ResumeUseCase,
     private val getCurrentPositionUseCase: GetCurrentPositionUseCase,
     private val getDurationUseCase: GetDurationUseCase,
-    private val isPlayingUseCase: IsPlayingUseCase
+    private val isPlayingUseCase: IsPlayingUseCase,
+    private val seekToUseCase: SeekToUseCase,
+    private val stopUseCase: StopUseCase
 ): ViewModel() {
-
     private val _state = mutableStateOf(MusicState())
     val state: State<MusicState> = _state
 
+    private var progressJob: Job? = null
+
     init {
-        try {
-            getTracksByTagUseCase("calm")
-                .onEach { tracks ->
-                    _state.value = _state.value.copy(
-                        tracks = tracks
-                    )
-                }
-                .launchIn(viewModelScope)
-        } catch (e: Exception) {
-            Log.e("MusicViewModel", "Error fetching tracks", e)
-        }
+        loadTracks("calm")
     }
 
     fun onEvent(event: MusicEvent) {
         when(event) {
-            is MusicEvent.OnTrackClick -> {
-                _state.value = _state.value.copy(currentTrack = event.track)
-                onEvent(MusicEvent.Play(event.track))
-            }
-            is MusicEvent.Play -> {
+            is MusicEvent.TrackClick -> {
                 playUseCase(event.track.audioUrl)
-                observeProgress()
-                _state.value = _state.value.copy(isPlaying = true)
+                startObservingProgress()
+                _state.value = _state.value.copy(
+                    currentTrack = event.track,
+                    isPlaying = true,
+                    isEnd = false
+                )
             }
             is MusicEvent.Pause -> {
                 pauseUseCase()
-                _state.value = _state.value.copy(isPlaying = false)
+                _state.value = _state.value.copy(isPlaying = isPlayingUseCase())
+                stopObservingProgress()
             }
             is MusicEvent.Resume -> {
                 resumeUseCase()
-                _state.value = _state.value.copy(isPlaying = true)
+                _state.value = _state.value.copy(
+                    isPlaying = isPlayingUseCase(),
+                    isEnd = false
+                )
+                startObservingProgress()
             }
             is MusicEvent.SeekTo -> {
-                TODO()
+                seekToUseCase(event.positionMs)
+            }
+            is MusicEvent.TrackEnd -> {
+                pauseUseCase()
+                _state.value = _state.value.copy(isPlaying = isPlayingUseCase())
+                seekToUseCase(0L)
+                _state.value = _state.value.copy(
+                    isEnd = true
+                )
+                stopObservingProgress()
             }
         }
     }
 
-    private fun observeProgress() {
-        viewModelScope.launch {
-            while (true) {
-                val position = getCurrentPositionUseCase()
-                val duration = getDurationUseCase()
+    private fun startObservingProgress() {
+        progressJob?.cancel()
+        progressJob = viewModelScope.launch {
+            while (isActive) {
+                val position = getCurrentPositionUseCase().toFloat()
+                val duration = getDurationUseCase().toFloat()
 
                 val progress = if (duration > 0) {
-                    position.toFloat() / duration
+                    position / duration
                 } else 0f
 
                 _state.value = _state.value.copy(
                     progress = progress,
+                    duration = duration
                 )
+
+                if (position >= duration && duration > 0) {
+                    onEvent(MusicEvent.TrackEnd)
+                    break
+                }
+
+                Log.d("progress", "$position $duration")
 
                 delay(100L)
             }
         }
+    }
+
+    private fun stopObservingProgress() {
+        progressJob?.cancel()
+        progressJob = null
+    }
+
+    private fun loadTracks(tag: String) {
+        getTracksByTagUseCase(tag)
+            .onEach { tracks ->
+                _state.value = _state.value.copy(
+                    tracks = tracks,
+                    isLoading = false
+                )
+            }
+            .catch { e ->
+                Log.e("MusicViewModel", "Error fetching tracks", e)
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    error = e.message ?: "Unknown error"
+                )
+            }
+            .launchIn(viewModelScope)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopObservingProgress()
+        stopUseCase()
     }
 }

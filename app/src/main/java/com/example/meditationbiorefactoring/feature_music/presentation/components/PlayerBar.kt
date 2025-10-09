@@ -10,21 +10,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.example.meditationbiorefactoring.feature_music.domain.model.Track
 
 @Composable
 fun PlayerBar(
     track: Track,
+    progress: Float,
     buttonIcon: ImageVector,
-    onPlayPause: () -> Unit,
-    progress: Float
+    onPlayControl: () -> Unit,
+    onSeek: (Float) -> Unit
 ) {
     Box(
         contentAlignment = Alignment.BottomStart
@@ -34,7 +36,8 @@ fun PlayerBar(
                 .fillMaxWidth()
                 .background(
                     color = Color.LightGray,
-                ),
+                )
+                .pointerInput(Unit) {},
             verticalArrangement = Arrangement.Bottom,
         ) {
             MusicItem(
@@ -53,16 +56,20 @@ fun PlayerBar(
                         end = 16.dp
                     )
             ) {
-                IconButton(onClick = onPlayPause) {
+                IconButton(onClick = onPlayControl) {
                     Icon(
                         imageVector = buttonIcon,
                         contentDescription = "listen",
                         modifier = Modifier.size(30.dp)
                     )
                 }
-                LinearProgressIndicator(
-                    progress = { progress },
-                    modifier = Modifier.fillMaxWidth(),
+                Slider(
+                    value = progress,
+                    onValueChange = { newValue -> onSeek(newValue) },
+                    valueRange = 0f..1f,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
                 )
             }
         }

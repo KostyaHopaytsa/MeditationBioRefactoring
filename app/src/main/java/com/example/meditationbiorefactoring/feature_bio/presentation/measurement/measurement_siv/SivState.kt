@@ -1,8 +1,8 @@
-package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_brpm
+package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_siv
 
 import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
 
-data class BrpmState(
+data class SivState(
     val isLoading: Boolean = false,
     val isMeasuring: Boolean = false,
     val isMeasured: Boolean = false,

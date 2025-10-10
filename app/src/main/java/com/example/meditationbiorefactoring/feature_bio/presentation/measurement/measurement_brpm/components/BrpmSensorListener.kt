@@ -1,4 +1,4 @@
-package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_brpm.components
+package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_brpm.components
 
 import android.content.Context
 import android.hardware.Sensor

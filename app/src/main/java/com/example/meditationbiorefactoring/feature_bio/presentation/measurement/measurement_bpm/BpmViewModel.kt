@@ -1,4 +1,4 @@
-package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_bpm
+package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_bpm
 
 import android.util.Log
 import androidx.compose.runtime.State
@@ -11,7 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.BpmMeasurementUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.ResetBpmMeasurementUseCase
-import com.example.meditationbiorefactoring.feature_bio.domain.use_case.SetBpmUseCase
+import com.example.meditationbiorefactoring.feature_bio.domain.util.StressMeasurementCollector
 import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
 import kotlinx.coroutines.launch
 
@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 class BpmViewModel @Inject constructor(
     private val bpmMeasurementUseCase: BpmMeasurementUseCase,
     private val resetBpmMeasurementUseCase: ResetBpmMeasurementUseCase,
-    private val setBpmUseCase: SetBpmUseCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(BpmState())
@@ -87,7 +86,7 @@ class BpmViewModel @Inject constructor(
                         else if (result.value > 100) "high"
                         else "normal",
                     )
-                    setBpmUseCase(result.value)
+                    StressMeasurementCollector().setBpm(result.value)
                 }
                 is MeasurementResult.Invalid -> {
                     _state.value = _state.value.copy(

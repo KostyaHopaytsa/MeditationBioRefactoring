@@ -1,4 +1,4 @@
-package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_brpm
+package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_brpm
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +16,7 @@ import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorT
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementError
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementStart
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementResult
-import com.example.meditationbiorefactoring.feature_bio.presentation.measurement_brpm.components.BrpmSensorListener
+import com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_brpm.components.BrpmSensorListener
 
 @Composable
 fun BrpmScreen(

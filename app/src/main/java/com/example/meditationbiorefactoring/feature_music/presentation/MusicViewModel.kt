@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.meditationbiorefactoring.feature_bio.domain.use_case.GetMeasurementByIdUseCase
 import com.example.meditationbiorefactoring.feature_music.domain.use_case.GetCurrentPositionUseCase
 import com.example.meditationbiorefactoring.feature_music.domain.use_case.GetDurationUseCase
 import com.example.meditationbiorefactoring.feature_music.domain.use_case.GetTracksByTagUseCase
@@ -34,7 +35,8 @@ class MusicViewModel @Inject constructor(
     private val getDurationUseCase: GetDurationUseCase,
     private val isPlayingUseCase: IsPlayingUseCase,
     private val seekToUseCase: SeekToUseCase,
-    private val stopUseCase: StopUseCase
+    private val stopUseCase: StopUseCase,
+    private val getMeasurementByIdUseCase: GetMeasurementByIdUseCase
 ): ViewModel() {
     private val _state = mutableStateOf(MusicState())
     val state: State<MusicState> = _state
@@ -116,6 +118,29 @@ class MusicViewModel @Inject constructor(
         progressJob?.cancel()
         progressJob = null
     }
+
+    fun loadByStressLevel(stressLevel: String) {
+        val tag = when (stressLevel) {
+            "Low" -> "energy"
+            "Medium" -> "focus"
+            else -> "meditation"
+        }
+        loadTracks(tag)
+    }
+
+    fun loadFromMeasurement(id: Int) {
+        viewModelScope.launch {
+            val measurement = getMeasurementByIdUseCase(id)
+            val tag = when (measurement?.stress) {
+                "Low" -> "energy"
+                "Medium" -> "focus"
+                else -> "meditation"
+            }
+            loadTracks(tag)
+        }
+    }
+
+    fun loadDefault() = loadTracks("calm,meditation")
 
     private fun loadTracks(tag: String) {
         getTracksByTagUseCase(tag)

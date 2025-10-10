@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +26,19 @@ import com.example.meditationbiorefactoring.feature_music.presentation.component
 import com.example.meditationbiorefactoring.feature_music.presentation.components.PlayerBar
 
 @Composable
-fun MusicScreen(viewModel: MusicViewModel = hiltViewModel()) {
+fun MusicScreen(
+    viewModel: MusicViewModel = hiltViewModel(),
+    stressLevel: String? = null,
+    measurementId: Int? = null
+) {
+    LaunchedEffect(stressLevel, measurementId) {
+        when {
+            stressLevel != null -> viewModel.loadByStressLevel(stressLevel)
+            measurementId != null -> viewModel.loadFromMeasurement(measurementId)
+            else -> viewModel.loadDefault()
+        }
+    }
+
     val state = viewModel.state.value
 
     if (state.isLoading) {

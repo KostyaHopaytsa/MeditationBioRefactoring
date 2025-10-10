@@ -1,4 +1,4 @@
-package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_siv
+package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_siv
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.ResetSivMeasurementUseCase
-import com.example.meditationbiorefactoring.feature_bio.domain.use_case.SetSivUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.StartSivRecordingUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.StopSivAndAnalyzeUseCase
+import com.example.meditationbiorefactoring.feature_bio.domain.util.StressMeasurementCollector
 import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,7 +19,6 @@ class SivViewModel @Inject constructor(
     private val startSivRecordingUseCase: StartSivRecordingUseCase,
     private val stopSivAndAnalyzeUseCase: StopSivAndAnalyzeUseCase,
     private val resetSivMeasurementUseCase: ResetSivMeasurementUseCase,
-    private val setSivUseCase: SetSivUseCase
 ): ViewModel() {
 
     private val _state = mutableStateOf(SivState())
@@ -46,7 +45,7 @@ class SivViewModel @Inject constructor(
                                 else if (result.value > 0.09) "high"
                                 else "normal",
                             )
-                            setSivUseCase(result.value)
+                            StressMeasurementCollector().setSiv(result.value)
                         }
                         is MeasurementResult.Invalid -> {
                             _state.value = _state.value.copy(

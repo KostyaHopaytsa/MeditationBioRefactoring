@@ -1,4 +1,4 @@
-package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_bpm
+package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_bpm
 
 
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,7 @@ import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorT
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementError
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementStart
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementResult
-import com.example.meditationbiorefactoring.feature_bio.presentation.measurement_bpm.components.CameraPreview
+import com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_bpm.components.CameraPreview
 
 @Composable
 fun BpmScreen(

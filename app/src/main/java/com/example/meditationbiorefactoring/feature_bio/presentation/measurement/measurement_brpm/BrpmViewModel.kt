@@ -1,4 +1,4 @@
-package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_brpm
+package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_brpm
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableFloatStateOf
@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.BrpmMeasurementUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.ResetBrpmMeasurementUseCase
-import com.example.meditationbiorefactoring.feature_bio.domain.use_case.SetBrpmUseCase
+import com.example.meditationbiorefactoring.feature_bio.domain.util.StressMeasurementCollector
 import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -18,7 +18,6 @@ import javax.inject.Inject
 class BrpmViewModel @Inject constructor(
     private val brpmMeasurementUseCase: BrpmMeasurementUseCase,
     private val resetBrpmMeasurementUseCase: ResetBrpmMeasurementUseCase,
-    private val setBrpmUseCase: SetBrpmUseCase
 ): ViewModel() {
 
     private val _state = mutableStateOf(BrpmState())
@@ -71,7 +70,7 @@ class BrpmViewModel @Inject constructor(
                         else if (result.value > 25) "high"
                         else "normal",
                     )
-                    setBrpmUseCase(result.value)
+                    StressMeasurementCollector().setBrpm(result.value)
                 }
                 is MeasurementResult.Invalid -> {
                     _state.value = _state.value.copy(

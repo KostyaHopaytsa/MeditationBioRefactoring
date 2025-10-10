@@ -10,7 +10,7 @@ import com.example.meditationbiorefactoring.feature_bio.presentation.bio_history
 
 @Composable
 fun BioHistoryScreen(
-    onNavigateToMusic: () -> Unit,
+    onNavigateToMusic: (Int) -> Unit,
     viewModel: BioHistoryViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
@@ -18,7 +18,10 @@ fun BioHistoryScreen(
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(state.measurements) { measurement ->
             MeasureItem(
-                onNavigateTo = onNavigateToMusic,
+                onNavigateTo = {
+                    measurement.id?.let{
+                    onNavigateToMusic(it) }
+                },
                 measurement = measurement
             )
         }

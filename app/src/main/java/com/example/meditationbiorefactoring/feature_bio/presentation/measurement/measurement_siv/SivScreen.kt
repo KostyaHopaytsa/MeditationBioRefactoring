@@ -1,4 +1,4 @@
-package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_siv
+package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_siv
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +23,7 @@ import com.example.meditationbiorefactoring.feature_bio.presentation.components.
 
 @Composable
 fun SivScreen(
-    onNavigateToMusic: () -> Unit,
+    onNavigateToMusic: (String) -> Unit,
     viewModel: SivViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
@@ -56,7 +56,9 @@ fun SivScreen(
                     value = state.value,
                     type = "SIV",
                     buttonDescription = "To Music",
-                    onNavigateTo = onNavigateToMusic,
+                    onNavigateTo = {
+                        onNavigateToMusic()
+                    },
                     onRestart = { viewModel.onEvent(SivEvent.Retry) }
                 )
             }

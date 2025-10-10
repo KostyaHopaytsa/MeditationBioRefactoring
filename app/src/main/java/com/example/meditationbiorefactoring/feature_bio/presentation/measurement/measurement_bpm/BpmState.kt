@@ -1,12 +1,13 @@
-package com.example.meditationbiorefactoring.feature_bio.presentation.measurement_siv
+package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_bpm
 
 import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
 
-data class SivState(
+data class BpmState(
     val isLoading: Boolean = false,
     val isMeasuring: Boolean = false,
     val isMeasured: Boolean = false,
     val value: String = "",
     val status: String = "",
-    val error: ErrorType? = null
+    val error: ErrorType? = null,
+    val isTorchEnabled: Boolean = false
 )

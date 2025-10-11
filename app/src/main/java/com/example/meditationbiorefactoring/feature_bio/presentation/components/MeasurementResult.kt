@@ -13,13 +13,13 @@ fun MeasurementResult(
     value: String,
     type: String,
     buttonDescription: String,
-    onNavigateTo: () -> Unit,
+    onNavigate: () -> Unit,
     onRestart: () -> Unit
 ) {
     Box(contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "$type:$value - $status")
-            Button(onClick = onNavigateTo) {
+            Button(onClick = onNavigate) {
                 Text(text = buttonDescription)
             }
             Button(onClick = onRestart) {

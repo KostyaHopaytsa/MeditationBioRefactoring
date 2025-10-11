@@ -6,9 +6,9 @@ import javax.inject.Inject
 class ComputeOverallStressUseCase @Inject constructor() {
 
     operator fun invoke(data: StressData): String {
-        val bpm = data.bpm ?: error("BPM not measured yet")
-        val brpm = data.brpm ?: error("BRPM not measured yet")
-        val siv = data.siv ?: error("SIV not measured yet")
+        val bpm = data.bpm ?: return "Unknown"
+        val brpm = data.brpm ?: return "Unknown"
+        val siv = data.siv ?: return "Unknown"
 
         return when {
             bpm > 100 || brpm > 20 || siv > 0.09 -> "High"

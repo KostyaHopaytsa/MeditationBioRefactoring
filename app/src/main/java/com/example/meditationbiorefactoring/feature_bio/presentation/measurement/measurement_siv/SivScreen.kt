@@ -12,6 +12,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -24,9 +27,17 @@ import com.example.meditationbiorefactoring.feature_bio.presentation.components.
 @Composable
 fun SivScreen(
     onNavigateToMusic: (String) -> Unit,
-    viewModel: SivViewModel = hiltViewModel()
+    viewModel: SivViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state.value
+
+    val navigateToMusic by viewModel.navigateEvent.collectAsState(initial = null)
+
+    LaunchedEffect(navigateToMusic) {
+        navigateToMusic?.let { overall ->
+            onNavigateToMusic(overall)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -56,8 +67,8 @@ fun SivScreen(
                     value = state.value,
                     type = "SIV",
                     buttonDescription = "To Music",
-                    onNavigateTo = {
-                        onNavigateToMusic()
+                    onNavigate = {
+                        viewModel.onEvent(SivEvent.NavigateClick)
                     },
                     onRestart = { viewModel.onEvent(SivEvent.Retry) }
                 )

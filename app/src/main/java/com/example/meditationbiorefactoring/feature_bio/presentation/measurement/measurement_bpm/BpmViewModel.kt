@@ -1,6 +1,5 @@
 package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_bpm
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -11,7 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.BpmMeasurementUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.ResetBpmMeasurementUseCase
-import com.example.meditationbiorefactoring.feature_bio.domain.util.StressMeasurementCollector
+import com.example.meditationbiorefactoring.feature_bio.domain.util.BioParamType
+import com.example.meditationbiorefactoring.feature_bio.presentation.measurement.MeasurementAggregator
 import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
 import kotlinx.coroutines.launch
 
@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 class BpmViewModel @Inject constructor(
     private val bpmMeasurementUseCase: BpmMeasurementUseCase,
     private val resetBpmMeasurementUseCase: ResetBpmMeasurementUseCase,
+    private val aggregator: MeasurementAggregator
 ) : ViewModel() {
 
     private val _state = mutableStateOf(BpmState())
@@ -68,8 +69,6 @@ class BpmViewModel @Inject constructor(
                 firstProgressValue = _progress.floatValue
             }
 
-            Log.d("firstProgressValue", "$firstProgressValue")
-
             if(_progress.floatValue == 1F - firstProgressValue!! * 2) {
                 _state.value = _state.value.copy(
                     isTorchEnabled = false,
@@ -86,7 +85,7 @@ class BpmViewModel @Inject constructor(
                         else if (result.value > 100) "high"
                         else "normal",
                     )
-                    StressMeasurementCollector().setBpm(result.value)
+                    aggregator.updateMeasurement(BioParamType.bpm, result.value)
                 }
                 is MeasurementResult.Invalid -> {
                     _state.value = _state.value.copy(

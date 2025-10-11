@@ -4,13 +4,17 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.meditationbiorefactoring.feature_bio.domain.use_case.InsertMeasurementUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.ResetSivMeasurementUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.StartSivRecordingUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.StopSivAndAnalyzeUseCase
-import com.example.meditationbiorefactoring.feature_bio.domain.util.StressMeasurementCollector
+import com.example.meditationbiorefactoring.feature_bio.domain.util.BioParamType
+import com.example.meditationbiorefactoring.feature_bio.presentation.measurement.MeasurementAggregator
 import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,10 +23,14 @@ class SivViewModel @Inject constructor(
     private val startSivRecordingUseCase: StartSivRecordingUseCase,
     private val stopSivAndAnalyzeUseCase: StopSivAndAnalyzeUseCase,
     private val resetSivMeasurementUseCase: ResetSivMeasurementUseCase,
+    private val aggregator: MeasurementAggregator,
 ): ViewModel() {
 
     private val _state = mutableStateOf(SivState())
     val state: State<SivState> = _state
+
+    private val _navigateEvent = MutableSharedFlow<String>()
+    val navigateEvent: SharedFlow<String> = _navigateEvent
 
     fun onEvent(event: SivEvent) {
         when (event) {
@@ -45,7 +53,8 @@ class SivViewModel @Inject constructor(
                                 else if (result.value > 0.09) "high"
                                 else "normal",
                             )
-                            StressMeasurementCollector().setSiv(result.value)
+                            aggregator.updateMeasurement(BioParamType.siv, result.value)
+                            aggregator.computeOverallStress()
                         }
                         is MeasurementResult.Invalid -> {
                             _state.value = _state.value.copy(
@@ -64,6 +73,12 @@ class SivViewModel @Inject constructor(
                 viewModelScope.launch {
                     resetSivMeasurementUseCase()
                     _state.value = SivState()
+                }
+            }
+            is SivEvent.NavigateClick -> {
+                viewModelScope.launch {
+                    aggregator.saveMeasurement()
+                    _navigateEvent.emit(aggregator.state.value.overallStress)
                 }
             }
             is SivEvent.Error -> {

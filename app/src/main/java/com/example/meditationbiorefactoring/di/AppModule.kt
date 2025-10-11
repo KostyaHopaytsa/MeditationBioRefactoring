@@ -82,16 +82,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideStressAggregatorRepository(
-        measurementRepository: MeasurementRepository
-    ): StressAggregatorRepository {
-        return StressAggregatorRepositoryImpl(
-            measurementRepository
-        )
-    }
-
-    @Provides
-    @Singleton
     fun provideMusicPlayerRepository(
         @ApplicationContext context: Context
     ): MusicPlayerRepository {

@@ -54,7 +54,7 @@ fun BrpmScreen(
                     value = state.value,
                     type = "BRPM",
                     buttonDescription = "To SIV",
-                    onNavigateTo = onNavigateToSiv,
+                    onNavigate = onNavigateToSiv,
                     onRestart = { viewModel.onEvent(BrpmEvent.Retry) }
                 )
             }

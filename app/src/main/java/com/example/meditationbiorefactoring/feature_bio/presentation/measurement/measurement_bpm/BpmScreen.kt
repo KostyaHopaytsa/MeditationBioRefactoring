@@ -60,7 +60,7 @@ fun BpmScreen(
                     value = state.value,
                     type = "BPM",
                     buttonDescription = "To BRPM",
-                    onNavigateTo = onNavigateToBrpm,
+                    onNavigate = onNavigateToBrpm,
                     onRestart = { viewModel.onEvent(BpmEvent.Retry) }
                 )
 

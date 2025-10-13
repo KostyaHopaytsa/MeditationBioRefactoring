@@ -1,10 +1,10 @@
 package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_siv
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.meditationbiorefactoring.feature_bio.domain.use_case.InsertMeasurementUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.ResetSivMeasurementUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.StartSivRecordingUseCase
@@ -79,6 +79,7 @@ class SivViewModel @Inject constructor(
                 viewModelScope.launch {
                     aggregator.saveMeasurement()
                     _navigateEvent.emit(aggregator.state.value.overallStress)
+                    Log.d("BpmState", "${aggregator.state.value}")
                 }
             }
             is SivEvent.Error -> {

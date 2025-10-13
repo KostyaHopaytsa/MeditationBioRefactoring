@@ -42,6 +42,8 @@ class MusicViewModel @Inject constructor(
     val state: State<MusicState> = _state
 
     private var progressJob: Job? = null
+    private var loadTracksJob: Job? = null
+
 
     init {
         loadTracks("calm")
@@ -143,15 +145,16 @@ class MusicViewModel @Inject constructor(
     fun loadDefault() = loadTracks("calm,meditation")
 
     private fun loadTracks(tag: String) {
-        getTracksByTagUseCase(tag)
+        loadTracksJob?.cancel()
+        loadTracksJob = getTracksByTagUseCase(tag)
             .onEach { tracks ->
                 _state.value = _state.value.copy(
                     tracks = tracks,
-                    isLoading = false
+                    isLoading = false,
+                    error = if (tracks.isEmpty()) "No tracks found" else null
                 )
             }
             .catch { e ->
-                Log.e("MusicViewModel", "Error fetching tracks", e)
                 _state.value = _state.value.copy(
                     isLoading = false,
                     error = e.message ?: "Unknown error"

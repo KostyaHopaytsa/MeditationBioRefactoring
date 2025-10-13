@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
-import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementError
+import com.example.meditationbiorefactoring.common.presentation.components.Error
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementStart
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementResult
 import com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_brpm.components.BrpmSensorListener
@@ -64,7 +64,7 @@ fun BrpmScreen(
                     ErrorType.MeasureError -> "Measurement failed"
                     ErrorType.UnknownError -> "Unknown error"
                 }
-                MeasurementError(
+                Error(
                     message = errorMessage,
                     onRetry = { viewModel.onEvent(BrpmEvent.Retry) }
                 )

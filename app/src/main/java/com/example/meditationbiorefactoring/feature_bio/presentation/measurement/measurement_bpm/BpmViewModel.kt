@@ -1,5 +1,6 @@
 package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_bpm
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +29,11 @@ class BpmViewModel @Inject constructor(
     private val _progress = mutableFloatStateOf(0f)
     val progress: State<Float> = _progress
     private var firstProgressValue: Float? = null
+
+    init {
+        Log.d("BpmState", "${state.value}")
+        Log.d("BpmState", "${aggregator.state.value}")
+    }
 
     fun onEvent(event: BpmEvent) {
         when (event) {

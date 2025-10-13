@@ -24,7 +24,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         composable(route = Screen.HomeScreen.route) {
             HomeScreen(
                 onNavigateToBpm = { navController.navigate(Screen.BpmScreen.route) },
-                onNavigateToMusic = { navController.navigate(Screen.MusicScreen.route) },
+                onNavigateToMusic = { navController.navigate(Screen.MusicScreen.createRoute()) },
                 onNavigateToBioHistory = { navController.navigate(Screen.BioHistoryScreen.route) }
             )
         }

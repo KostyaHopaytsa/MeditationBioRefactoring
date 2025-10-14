@@ -12,6 +12,8 @@ import com.example.meditationbiorefactoring.feature_bio.domain.util.BioParamType
 import com.example.meditationbiorefactoring.feature_bio.presentation.measurement.MeasurementAggregator
 import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,6 +28,9 @@ class BrpmViewModel @Inject constructor(
     val state: State<BrpmState> = _state
     private val _progress = mutableFloatStateOf(0f)
     val progress: State<Float> = _progress
+
+    private val _navigateEvent = Channel<Unit>(Channel.BUFFERED)
+    val navigateEvent = _navigateEvent.receiveAsFlow()
 
     fun onEvent(event: BrpmEvent) {
         when(event) {
@@ -44,7 +49,6 @@ class BrpmViewModel @Inject constructor(
                     )
                 }
             }
-
             is BrpmEvent.Error -> {
                 _state.value = _state.value.copy(
                     isMeasuring = false,
@@ -53,6 +57,11 @@ class BrpmViewModel @Inject constructor(
             }
             is BrpmEvent.DataCaptured -> {
                 processFrame(event.z)
+            }
+            is BrpmEvent.NavigateClick -> {
+                viewModelScope.launch {
+                    _navigateEvent.send(Unit)
+                }
             }
         }
     }

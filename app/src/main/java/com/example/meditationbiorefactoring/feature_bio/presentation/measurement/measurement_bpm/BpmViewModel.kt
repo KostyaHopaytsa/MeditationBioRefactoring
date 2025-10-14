@@ -14,6 +14,8 @@ import com.example.meditationbiorefactoring.feature_bio.domain.use_case.ResetBpm
 import com.example.meditationbiorefactoring.feature_bio.domain.util.BioParamType
 import com.example.meditationbiorefactoring.feature_bio.presentation.measurement.MeasurementAggregator
 import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -29,6 +31,9 @@ class BpmViewModel @Inject constructor(
     private val _progress = mutableFloatStateOf(0f)
     val progress: State<Float> = _progress
     private var firstProgressValue: Float? = null
+
+    private val _navigateEvent = Channel<Unit>(Channel.BUFFERED)
+    val navigateEvent = _navigateEvent.receiveAsFlow()
 
     init {
         Log.d("BpmState", "${state.value}")
@@ -62,6 +67,11 @@ class BpmViewModel @Inject constructor(
             }
             is BpmEvent.FrameCaptured -> {
                 processFrame(event.buffer)
+            }
+            is BpmEvent.NavigateClick -> {
+                viewModelScope.launch {
+                    _navigateEvent.send(Unit)
+                }
             }
         }
     }

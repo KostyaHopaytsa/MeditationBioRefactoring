@@ -2,6 +2,7 @@ package com.example.meditationbiorefactoring.feature_music.presentation
 
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,6 +41,9 @@ class MusicViewModel @Inject constructor(
 ): ViewModel() {
     private val _state = mutableStateOf(MusicState())
     val state: State<MusicState> = _state
+
+    private val _progress = mutableFloatStateOf(0f)
+    val progress: State<Float> = _progress
 
     private var progressJob: Job? = null
     private var loadTracksJob: Job? = null
@@ -91,18 +95,18 @@ class MusicViewModel @Inject constructor(
     private fun startObservingProgress() {
         progressJob?.cancel()
         progressJob = viewModelScope.launch {
+            val duration = getDurationUseCase().toFloat()
+            _state.value = _state.value.copy(
+                duration = duration
+            )
             while (isActive) {
                 val position = getCurrentPositionUseCase().toFloat()
-                val duration = getDurationUseCase().toFloat()
 
                 val progress = if (duration > 0) {
                     position / duration
                 } else 0f
 
-                _state.value = _state.value.copy(
-                    progress = progress,
-                    duration = duration
-                )
+                _progress.floatValue = progress
 
                 if (position >= duration && duration > 0) {
                     onEvent(MusicEvent.TrackEnd)

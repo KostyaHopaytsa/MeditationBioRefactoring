@@ -1,6 +1,5 @@
 package com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_siv
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,8 +12,8 @@ import com.example.meditationbiorefactoring.feature_bio.domain.util.BioParamType
 import com.example.meditationbiorefactoring.feature_bio.presentation.measurement.MeasurementAggregator
 import com.example.meditationbiorefactoring.feature_bio.presentation.util.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,8 +28,8 @@ class SivViewModel @Inject constructor(
     private val _state = mutableStateOf(SivState())
     val state: State<SivState> = _state
 
-    private val _navigateEvent = MutableSharedFlow<String>()
-    val navigateEvent: SharedFlow<String> = _navigateEvent
+    private val _navigateEvent = Channel<String>(Channel.BUFFERED)
+    val navigateEvent = _navigateEvent.receiveAsFlow()
 
     fun onEvent(event: SivEvent) {
         when (event) {
@@ -78,8 +77,7 @@ class SivViewModel @Inject constructor(
             is SivEvent.NavigateClick -> {
                 viewModelScope.launch {
                     aggregator.saveMeasurement()
-                    _navigateEvent.emit(aggregator.state.value.overallStress)
-                    Log.d("BpmState", "${aggregator.state.value}")
+                    _navigateEvent.send(aggregator.state.value.overallStress)
                 }
             }
             is SivEvent.Error -> {

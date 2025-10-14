@@ -7,4 +7,5 @@ sealed class BrpmEvent {
     data object Retry : BrpmEvent()
     data class Error(val error: ErrorType) : BrpmEvent()
     data class DataCaptured (val z: Float) : BrpmEvent()
+    data object NavigateClick : BrpmEvent()
 }

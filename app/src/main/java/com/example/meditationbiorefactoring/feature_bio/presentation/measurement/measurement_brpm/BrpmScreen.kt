@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -17,6 +18,7 @@ import com.example.meditationbiorefactoring.common.presentation.components.Error
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementStart
 import com.example.meditationbiorefactoring.feature_bio.presentation.components.MeasurementResult
 import com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_brpm.components.BrpmSensorListener
+import com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_siv.SivEvent
 
 @Composable
 fun BrpmScreen(
@@ -24,6 +26,12 @@ fun BrpmScreen(
     viewModel: BrpmViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
+
+    LaunchedEffect(Unit) {
+        viewModel.navigateEvent.collect {
+            onNavigateToSiv()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -54,7 +62,7 @@ fun BrpmScreen(
                     value = state.value,
                     type = "BRPM",
                     buttonDescription = "To SIV",
-                    onNavigate = onNavigateToSiv,
+                    onNavigate =  { viewModel.onEvent(BrpmEvent.NavigateClick) },
                     onRestart = { viewModel.onEvent(BrpmEvent.Retry) }
                 )
             }

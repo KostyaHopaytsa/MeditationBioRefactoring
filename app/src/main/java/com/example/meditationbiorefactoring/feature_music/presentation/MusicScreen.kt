@@ -69,7 +69,7 @@ fun MusicScreen(
         state.currentTrack?.let {
             PlayerBar(
                 track = it,
-                progress = state.progress,
+                progress = viewModel.progress.value,
                 buttonIcon = if (state.isPlaying) Icons.Default.Pause
                     else if(state.isEnd) Icons.Default.Replay
                     else Icons.Default.PlayArrow,

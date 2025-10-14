@@ -13,8 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -31,10 +29,8 @@ fun SivScreen(
 ) {
     val state = viewModel.state.value
 
-    val navigateToMusic by viewModel.navigateEvent.collectAsState(initial = null)
-
-    LaunchedEffect(navigateToMusic) {
-        navigateToMusic?.let { overall ->
+    LaunchedEffect(Unit) {
+        viewModel.navigateEvent.collect { overall ->
             onNavigateToMusic(overall)
         }
     }
@@ -67,9 +63,7 @@ fun SivScreen(
                     value = state.value,
                     type = "SIV",
                     buttonDescription = "To Music",
-                    onNavigate = {
-                        viewModel.onEvent(SivEvent.NavigateClick)
-                    },
+                    onNavigate = { viewModel.onEvent(SivEvent.NavigateClick) },
                     onRestart = { viewModel.onEvent(SivEvent.Retry) }
                 )
             }

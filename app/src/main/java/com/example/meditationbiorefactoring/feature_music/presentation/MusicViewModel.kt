@@ -125,11 +125,12 @@ class MusicViewModel @Inject constructor(
         progressJob = null
     }
 
-    fun loadByStressLevel(stressLevel: String) {
+    fun loadByStressLevel(stressLevel: String?) {
         val tag = when (stressLevel) {
-            "Low" -> "energy"
-            "Medium" -> "focus"
-            else -> "meditation"
+            "Low" -> "ambient+chillout"
+            "Medium" -> "downtempo"
+            "High" -> "calm+meditation"
+            else -> "ambient+chillout+downtempo+calm+meditation"
         }
         loadTracks(tag)
     }
@@ -138,15 +139,16 @@ class MusicViewModel @Inject constructor(
         viewModelScope.launch {
             val measurement = getMeasurementByIdUseCase(id)
             val tag = when (measurement?.stress) {
-                "Low" -> "energy"
-                "Medium" -> "focus"
-                else -> "meditation"
+                "Low" -> "ambient+chillout"
+                "Medium" -> "downtempo"
+                "High" -> "calm+meditation"
+                else -> "ambient+chillout+downtempo+calm+meditation"
             }
             loadTracks(tag)
         }
     }
 
-    fun loadDefault() = loadTracks("calm,meditation")
+    fun loadDefault() = loadTracks("ambient+chillout+downtempo+calm+meditation")
 
     private fun loadTracks(tag: String) {
         loadTracksJob?.cancel()

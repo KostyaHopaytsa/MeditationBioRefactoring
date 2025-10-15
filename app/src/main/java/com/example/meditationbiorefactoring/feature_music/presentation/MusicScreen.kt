@@ -32,11 +32,7 @@ fun MusicScreen(
     measurementId: Int? = null
 ) {
     LaunchedEffect(stressLevel, measurementId) {
-        when {
-            stressLevel != null -> viewModel.loadByStressLevel(stressLevel)
-            measurementId != null -> viewModel.loadFromMeasurement(measurementId)
-            else -> viewModel.loadDefault()
-        }
+        viewModel.loadMusic(stressLevel, measurementId)
     }
 
     val state = viewModel.state.value

@@ -21,6 +21,15 @@ import com.example.meditationbiorefactoring.feature_music.data.repository.MusicP
 import com.example.meditationbiorefactoring.feature_music.data.repository.TrackRepositoryImpl
 import com.example.meditationbiorefactoring.feature_music.domain.repository.MusicPlayerRepository
 import com.example.meditationbiorefactoring.feature_music.domain.repository.TrackRepository
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.GetCurrentPositionUseCase
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.GetDurationUseCase
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.IsPlayingUseCase
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.PauseUseCase
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.PlayUseCase
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.PlayerUseCases
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.ResumeUseCase
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.SeekToUseCase
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.StopUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -102,5 +111,20 @@ object AppModule {
     @Singleton
     fun provideTrackRepository(api: JamendoApi): TrackRepository {
         return TrackRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun providePlayerUseCases(repository: MusicPlayerRepository): PlayerUseCases {
+        return PlayerUseCases(
+            playUseCase = PlayUseCase(repository),
+            pauseUseCase = PauseUseCase(repository),
+            resumeUseCase = ResumeUseCase(repository),
+            getCurrentPositionUseCase = GetCurrentPositionUseCase(repository),
+            getDurationUseCase = GetDurationUseCase(repository),
+            isPlayingUseCase = IsPlayingUseCase(repository),
+            seekToUseCase = SeekToUseCase(repository),
+            stopUseCase = StopUseCase(repository)
+        )
     }
 }

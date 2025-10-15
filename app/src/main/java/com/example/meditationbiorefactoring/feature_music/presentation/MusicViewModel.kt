@@ -7,15 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.GetMeasurementByIdUseCase
-import com.example.meditationbiorefactoring.feature_music.domain.use_case.GetCurrentPositionUseCase
-import com.example.meditationbiorefactoring.feature_music.domain.use_case.GetDurationUseCase
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.GetTagByStressLevelUseCase
 import com.example.meditationbiorefactoring.feature_music.domain.use_case.GetTracksByTagUseCase
-import com.example.meditationbiorefactoring.feature_music.domain.use_case.IsPlayingUseCase
-import com.example.meditationbiorefactoring.feature_music.domain.use_case.PauseUseCase
-import com.example.meditationbiorefactoring.feature_music.domain.use_case.PlayUseCase
-import com.example.meditationbiorefactoring.feature_music.domain.use_case.ResumeUseCase
-import com.example.meditationbiorefactoring.feature_music.domain.use_case.SeekToUseCase
-import com.example.meditationbiorefactoring.feature_music.domain.use_case.StopUseCase
+import com.example.meditationbiorefactoring.feature_music.domain.use_case.PlayerUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -29,15 +23,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MusicViewModel @Inject constructor(
     private val getTracksByTagUseCase: GetTracksByTagUseCase,
-    private val playUseCase: PlayUseCase,
-    private val pauseUseCase: PauseUseCase,
-    private val resumeUseCase: ResumeUseCase,
-    private val getCurrentPositionUseCase: GetCurrentPositionUseCase,
-    private val getDurationUseCase: GetDurationUseCase,
-    private val isPlayingUseCase: IsPlayingUseCase,
-    private val seekToUseCase: SeekToUseCase,
-    private val stopUseCase: StopUseCase,
-    private val getMeasurementByIdUseCase: GetMeasurementByIdUseCase
+    private val playerUseCases: PlayerUseCases,
+    private val getMeasurementByIdUseCase: GetMeasurementByIdUseCase,
+    private val getTagByStressLevelUseCase: GetTagByStressLevelUseCase
 ): ViewModel() {
     private val _state = mutableStateOf(MusicState())
     val state: State<MusicState> = _state
@@ -56,7 +44,7 @@ class MusicViewModel @Inject constructor(
     fun onEvent(event: MusicEvent) {
         when(event) {
             is MusicEvent.TrackClick -> {
-                playUseCase(event.track.audioUrl)
+                playerUseCases.playUseCase(event.track.audioUrl)
                 startObservingProgress()
                 _state.value = _state.value.copy(
                     currentTrack = event.track,
@@ -65,25 +53,25 @@ class MusicViewModel @Inject constructor(
                 )
             }
             is MusicEvent.Pause -> {
-                pauseUseCase()
-                _state.value = _state.value.copy(isPlaying = isPlayingUseCase())
+                playerUseCases.pauseUseCase()
+                _state.value = _state.value.copy(isPlaying = playerUseCases.isPlayingUseCase())
                 stopObservingProgress()
             }
             is MusicEvent.Resume -> {
-                resumeUseCase()
+                playerUseCases.resumeUseCase()
                 _state.value = _state.value.copy(
-                    isPlaying = isPlayingUseCase(),
+                    isPlaying = playerUseCases.isPlayingUseCase(),
                     isEnd = false
                 )
                 startObservingProgress()
             }
             is MusicEvent.SeekTo -> {
-                seekToUseCase(event.positionMs)
+                playerUseCases. seekToUseCase(event.positionMs)
             }
             is MusicEvent.TrackEnd -> {
-                pauseUseCase()
-                _state.value = _state.value.copy(isPlaying = isPlayingUseCase())
-                seekToUseCase(0L)
+                playerUseCases.pauseUseCase()
+                _state.value = _state.value.copy(isPlaying = playerUseCases.isPlayingUseCase())
+                playerUseCases.seekToUseCase(0L)
                 _state.value = _state.value.copy(
                     isEnd = true
                 )
@@ -95,17 +83,23 @@ class MusicViewModel @Inject constructor(
     private fun startObservingProgress() {
         progressJob?.cancel()
         progressJob = viewModelScope.launch {
-            val duration = getDurationUseCase().toFloat()
-            _state.value = _state.value.copy(
-                duration = duration
-            )
+            var lastDuration = 0f
             while (isActive) {
-                val position = getCurrentPositionUseCase().toFloat()
+                val position = playerUseCases.getCurrentPositionUseCase().toFloat()
+                val duration = playerUseCases.getDurationUseCase().toFloat()
+
+                if (duration != lastDuration) {
+                    _state.value = _state.value.copy(duration = duration)
+                    lastDuration = duration
+                }
 
                 val progress = if (duration > 0) {
                     position / duration
                 } else 0f
 
+                _state.value = _state.value.copy(
+                    duration = duration
+                )
                 _progress.floatValue = progress
 
                 if (position >= duration && duration > 0) {
@@ -125,30 +119,19 @@ class MusicViewModel @Inject constructor(
         progressJob = null
     }
 
-    fun loadByStressLevel(stressLevel: String?) {
-        val tag = when (stressLevel) {
-            "Low" -> "ambient+chillout"
-            "Medium" -> "downtempo"
-            "High" -> "calm+meditation"
-            else -> "ambient+chillout+downtempo+calm+meditation"
-        }
-        loadTracks(tag)
-    }
-
-    fun loadFromMeasurement(id: Int) {
+    fun loadMusic(stressLevel: String?, measurementId: Int?) {
         viewModelScope.launch {
-            val measurement = getMeasurementByIdUseCase(id)
-            val tag = when (measurement?.stress) {
-                "Low" -> "ambient+chillout"
-                "Medium" -> "downtempo"
-                "High" -> "calm+meditation"
-                else -> "ambient+chillout+downtempo+calm+meditation"
+            val tag = when {
+                measurementId != null -> {
+                    val measurement = getMeasurementByIdUseCase(measurementId)
+                    getTagByStressLevelUseCase(measurement?.stress)
+                }
+                stressLevel != null -> getTagByStressLevelUseCase(stressLevel)
+                else -> "ambient+downtempo+calm"
             }
             loadTracks(tag)
         }
     }
-
-    fun loadDefault() = loadTracks("ambient+chillout+downtempo+calm+meditation")
 
     private fun loadTracks(tag: String) {
         loadTracksJob?.cancel()
@@ -172,6 +155,6 @@ class MusicViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         stopObservingProgress()
-        stopUseCase()
+        playerUseCases.stopUseCase()
     }
 }

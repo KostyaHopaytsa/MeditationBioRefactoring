@@ -59,12 +59,6 @@ class BpmViewModel @Inject constructor(
                     )
                 }
             }
-            is BpmEvent.Error -> {
-                _state.value = _state.value.copy(
-                    isMeasuring = false,
-                    error = event.error,
-                )
-            }
             is BpmEvent.FrameCaptured -> {
                 processFrame(event.buffer)
             }

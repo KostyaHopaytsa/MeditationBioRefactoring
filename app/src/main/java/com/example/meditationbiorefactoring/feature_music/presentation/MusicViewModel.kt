@@ -35,11 +35,7 @@ class MusicViewModel @Inject constructor(
 
     private var progressJob: Job? = null
     private var loadTracksJob: Job? = null
-
-
-    init {
-        loadTracks("calm")
-    }
+    private var lastTag: String? = null
 
     fun onEvent(event: MusicEvent) {
         when(event) {
@@ -76,6 +72,11 @@ class MusicViewModel @Inject constructor(
                     isEnd = true
                 )
                 stopObservingProgress()
+            }
+            MusicEvent.Retry -> {
+                lastTag?.let { tag ->
+                    loadTracks(tag)
+                }
             }
         }
     }
@@ -134,6 +135,9 @@ class MusicViewModel @Inject constructor(
     }
 
     private fun loadTracks(tag: String) {
+        lastTag = tag
+        _state.value = _state.value.copy(isLoading = true, error = null)
+
         loadTracksJob?.cancel()
         loadTracksJob = getTracksByTagUseCase(tag)
             .onEach { tracks ->

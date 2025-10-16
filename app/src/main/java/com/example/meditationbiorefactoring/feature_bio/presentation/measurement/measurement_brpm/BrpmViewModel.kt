@@ -49,12 +49,6 @@ class BrpmViewModel @Inject constructor(
                     )
                 }
             }
-            is BrpmEvent.Error -> {
-                _state.value = _state.value.copy(
-                    isMeasuring = false,
-                    error = event.error,
-                )
-            }
             is BrpmEvent.DataCaptured -> {
                 processFrame(event.z)
             }

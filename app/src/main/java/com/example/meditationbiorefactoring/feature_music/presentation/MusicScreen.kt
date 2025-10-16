@@ -22,6 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.meditationbiorefactoring.common.presentation.components.Error
+import com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_bpm.BpmEvent
 import com.example.meditationbiorefactoring.feature_music.presentation.components.MusicItem
 import com.example.meditationbiorefactoring.feature_music.presentation.components.PlayerBar
 
@@ -37,50 +39,59 @@ fun MusicScreen(
 
     val state = viewModel.state.value
 
-    if (state.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ){
-            CircularProgressIndicator()
-        }
-    } else {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(state.tracks) { track ->
-                MusicItem(
-                    track = track,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
-                        .size(120.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = LocalIndication.current,
-                        ) {
-                            viewModel.onEvent(MusicEvent.TrackClick(track))
-                        }
-                )
+    when {
+        state.isLoading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ){
+                CircularProgressIndicator()
             }
         }
-        state.currentTrack?.let {
-            PlayerBar(
-                track = it,
-                progress = viewModel.progress.value,
-                buttonIcon = if (state.isPlaying) Icons.Default.Pause
-                    else if(state.isEnd) Icons.Default.Replay
-                    else Icons.Default.PlayArrow,
-                onPlayControl = {
-                    if (state.isPlaying) {
-                        viewModel.onEvent(MusicEvent.Pause)
-                    } else {
-                        viewModel.onEvent(MusicEvent.Resume)
-                    }
-                },
-                onSeek = { newProgress ->
-                    val posMs = (newProgress * state.duration).toLong()
-                    viewModel.onEvent(MusicEvent.SeekTo(positionMs = posMs))
-                }
+        state.error != null -> {
+            Error(
+                message = state.error,
+                onRetry = { viewModel.onEvent(MusicEvent.Retry) }
             )
+        }
+        else -> {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(state.tracks) { track ->
+                    MusicItem(
+                        track = track,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                            .size(120.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = LocalIndication.current,
+                            ) {
+                                viewModel.onEvent(MusicEvent.TrackClick(track))
+                            }
+                    )
+                }
+            }
+            state.currentTrack?.let {
+                PlayerBar(
+                    track = it,
+                    progress = viewModel.progress.value,
+                    buttonIcon = if (state.isPlaying) Icons.Default.Pause
+                    else if (state.isEnd) Icons.Default.Replay
+                    else Icons.Default.PlayArrow,
+                    onPlayControl = {
+                        if (state.isPlaying) {
+                            viewModel.onEvent(MusicEvent.Pause)
+                        } else {
+                            viewModel.onEvent(MusicEvent.Resume)
+                        }
+                    },
+                    onSeek = { newProgress ->
+                        val posMs = (newProgress * state.duration).toLong()
+                        viewModel.onEvent(MusicEvent.SeekTo(positionMs = posMs))
+                    }
+                )
+            }
         }
     }
 }

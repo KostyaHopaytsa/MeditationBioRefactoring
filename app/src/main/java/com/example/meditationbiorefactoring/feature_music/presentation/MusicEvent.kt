@@ -8,4 +8,5 @@ sealed class MusicEvent {
     data object Resume : MusicEvent()
     data class TrackClick(val track: Track): MusicEvent()
     data object TrackEnd : MusicEvent()
+    data object Retry : MusicEvent()
 }

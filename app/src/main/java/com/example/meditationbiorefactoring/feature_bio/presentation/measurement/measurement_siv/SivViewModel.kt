@@ -80,12 +80,6 @@ class SivViewModel @Inject constructor(
                     _navigateEvent.send(aggregator.state.value.overallStress)
                 }
             }
-            is SivEvent.Error -> {
-                _state.value = _state.value.copy(
-                    isMeasuring = false,
-                    error = event.error,
-                )
-            }
         }
     }
 }

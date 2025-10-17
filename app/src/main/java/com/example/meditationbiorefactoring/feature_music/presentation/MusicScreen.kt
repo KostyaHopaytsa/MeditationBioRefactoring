@@ -1,5 +1,6 @@
 package com.example.meditationbiorefactoring.feature_music.presentation
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -20,24 +21,34 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+
 import com.example.meditationbiorefactoring.common.presentation.components.Error
-import com.example.meditationbiorefactoring.feature_bio.presentation.measurement.measurement_bpm.BpmEvent
 import com.example.meditationbiorefactoring.feature_music.presentation.components.MusicItem
 import com.example.meditationbiorefactoring.feature_music.presentation.components.PlayerBar
 
+
+@SuppressLint("FrequentlyChangingValue")
 @Composable
 fun MusicScreen(
     viewModel: MusicViewModel = hiltViewModel(),
     stressLevel: String? = null,
     measurementId: Int? = null
 ) {
+    val context = LocalContext.current
+    val state = viewModel.state.value
+
     LaunchedEffect(stressLevel, measurementId) {
         viewModel.loadMusic(stressLevel, measurementId)
     }
 
-    val state = viewModel.state.value
+    LaunchedEffect(state.tracks) {
+        if (state.tracks.isNotEmpty()) {
+            viewModel.preloadImages(context, state.tracks)
+        }
+    }
 
     when {
         state.isLoading -> {
@@ -55,7 +66,9 @@ fun MusicScreen(
             )
         }
         else -> {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
                 items(state.tracks) { track ->
                     MusicItem(
                         track = track,

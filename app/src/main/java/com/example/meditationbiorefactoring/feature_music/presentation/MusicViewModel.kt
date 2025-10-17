@@ -1,16 +1,21 @@
 package com.example.meditationbiorefactoring.feature_music.presentation
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.Coil
+import coil.request.CachePolicy
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.GetMeasurementByIdUseCase
+import com.example.meditationbiorefactoring.feature_music.domain.model.Track
 import com.example.meditationbiorefactoring.feature_music.domain.use_case.GetTagByStressLevelUseCase
 import com.example.meditationbiorefactoring.feature_music.domain.use_case.GetTracksByTagUseCase
 import com.example.meditationbiorefactoring.feature_music.domain.use_case.PlayerUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
@@ -19,6 +24,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import coil.request.ImageRequest
 
 @HiltViewModel
 class MusicViewModel @Inject constructor(
@@ -154,6 +160,28 @@ class MusicViewModel @Inject constructor(
                 )
             }
             .launchIn(viewModelScope)
+    }
+
+    fun preloadImages(context: Context, tracks: List<Track>) {
+        val imageLoader = Coil.imageLoader(context)
+        viewModelScope.launch(Dispatchers.IO) {
+            tracks.chunked(10).forEach { batch ->
+                batch.forEach { track ->
+                    track.imageUrl?.let { url ->
+                        imageLoader.enqueue(
+                            ImageRequest.Builder(context)
+                                .data(url)
+                                .size(300)
+                                .diskCachePolicy(CachePolicy.ENABLED)
+                                .memoryCachePolicy(CachePolicy.ENABLED)
+                                .allowHardware(false)
+                                .build()
+                        )
+                    }
+                }
+                delay(300)
+            }
+        }
     }
 
     override fun onCleared() {

@@ -41,7 +41,7 @@ fun MusicItem(
             contentAlignment = Alignment.Center,
         ) {
             AsyncImage(
-                track.imageUrl ?: Icons.Default.Warning,
+                model = track.imageUrl ?: Icons.Default.Warning,
                 contentDescription = "track image",
                 modifier = Modifier
                     .fillMaxSize()

@@ -1,8 +1,7 @@
-package com.example.meditationbiorefactoring.feature_bio.util
+package com.example.meditationbiorefactoring.feature_bio.data.analyzer
 
 import android.media.AudioFormat
 import android.media.AudioRecord
-import android.util.Log
 import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementAnalysis
 import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
 import android.media.MediaRecorder
@@ -22,6 +21,7 @@ class SivAnalyzerCore {
     fun startRecording() {
         try {
             bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)
+            if (bufferSize <= 0) return
             buffer = ShortArray(bufferSize * 5)
 
             recorder = AudioRecord(
@@ -32,15 +32,11 @@ class SivAnalyzerCore {
                 bufferSize
             )
 
-            if (recorder?.state != AudioRecord.STATE_INITIALIZED) {
-                Log.e("SIV", "AudioRecord not initialized.")
-                return
-            }
+            if (recorder?.state != AudioRecord.STATE_INITIALIZED) return
 
             isRecording = true
             currentIndex = 0
             recorder?.startRecording()
-            Log.d("SIV", "Recording started")
 
             Thread {
                 while (isRecording && currentIndex < buffer.size) {
@@ -48,8 +44,10 @@ class SivAnalyzerCore {
                     if (read > 0) currentIndex += read
                 }
             }.start()
-        } catch (e: SecurityException) {
-            Log.e("SIV", "Permission denied: ${e.message}")
+        } catch (_: SecurityException) {
+            isRecording = false
+            recorder?.release()
+            recorder = null
         }
     }
 
@@ -64,17 +62,12 @@ class SivAnalyzerCore {
         isRecording = false
         try {
             recorder?.stop()
-        } catch (e: IllegalStateException) {
-            Log.e("SIV", "Recorder stop failed: ${e.message}")
-        }
+        } catch (_: IllegalStateException) { }
         recorder?.release()
         recorder = null
 
-        Log.d("SIV", "Recording finished. Samples: $currentIndex")
-
         val result = analyze(buffer, currentIndex)
-
-        return MeasurementAnalysis (MeasurementResult.Success(result), progress = 1f)
+        return MeasurementAnalysis(MeasurementResult.Success(result), progress = 1f)
     }
 
     fun reset() {
@@ -95,13 +88,10 @@ class SivAnalyzerCore {
         }
 
         val rms = kotlin.math.sqrt(sumSq / length)
-
         val mean = sumSq / length
         var std = 0.0
-        for (v in norm) { std += (v * v - mean).pow(2) }
+        for (v in norm) std += (v * v - mean).pow(2)
         std = kotlin.math.sqrt(std / length)
-
-        Log.d("SIV", "RMS=$rms, MaxAmp=$maxAmp, StdDev=$std")
 
         return rms + std
     }

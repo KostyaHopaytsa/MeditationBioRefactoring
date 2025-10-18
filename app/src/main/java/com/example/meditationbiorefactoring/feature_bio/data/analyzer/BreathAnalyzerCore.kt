@@ -1,4 +1,4 @@
-package com.example.meditationbiorefactoring.feature_bio.util
+package com.example.meditationbiorefactoring.feature_bio.data.analyzer
 
 import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementAnalysis
 import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
@@ -8,7 +8,7 @@ import kotlin.math.min
 
 class BreathAnalyzerCore @Inject constructor() {
     private val zValues = mutableListOf<Float>()
-    private val bufferSize = 1200 // ~20 сек при 60 Гц
+    private val bufferSize = 1200
     private val smoothingWindow = 20
     private val minPeakDistance = 30
     private val minPeakAmplitude = 0.007f

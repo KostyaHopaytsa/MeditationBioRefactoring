@@ -13,9 +13,9 @@ import com.example.meditationbiorefactoring.feature_bio.domain.repository.BpmRep
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.BrpmRepository
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.MeasurementRepository
 import com.example.meditationbiorefactoring.feature_bio.domain.repository.SivRepository
-import com.example.meditationbiorefactoring.feature_bio.util.BreathAnalyzerCore
-import com.example.meditationbiorefactoring.feature_bio.util.PpgAnalyzerCore
-import com.example.meditationbiorefactoring.feature_bio.util.SivAnalyzerCore
+import com.example.meditationbiorefactoring.feature_bio.data.analyzer.BreathAnalyzerCore
+import com.example.meditationbiorefactoring.feature_bio.data.analyzer.PpgAnalyzerCore
+import com.example.meditationbiorefactoring.feature_bio.data.analyzer.SivAnalyzerCore
 import com.example.meditationbiorefactoring.feature_music.data.remote.JamendoApi
 import com.example.meditationbiorefactoring.feature_music.data.repository.MusicPlayerRepositoryImpl
 import com.example.meditationbiorefactoring.feature_music.data.repository.TrackRepositoryImpl

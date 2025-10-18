@@ -1,6 +1,5 @@
-package com.example.meditationbiorefactoring.feature_bio.util
+package com.example.meditationbiorefactoring.feature_bio.data.analyzer
 
-import android.util.Log
 import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementAnalysis
 import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
 import javax.inject.Inject
@@ -15,7 +14,6 @@ class PpgAnalyzerCore @Inject constructor(){
         val avg = buffer.map { it.toInt() and 0xFF }.average()
         values.add(avg)
         timestamps.add(System.currentTimeMillis())
-        Log.d("TEST", "Frame avg=$avg bufferSize=${values.size}")
 
         if (values.size > maxBufferSize) {
             values.removeAt(0)
@@ -27,10 +25,8 @@ class PpgAnalyzerCore @Inject constructor(){
         return if (values.size == maxBufferSize) {
             val bpm = computeBpm(values, timestamps)
             if (bpm in 40..150) {
-                Log.d("PpgAnalyzerCore", "BPM=$bpm")
                 MeasurementAnalysis (MeasurementResult.Success(bpm.toDouble()), progress = 1f)
             } else {
-                Log.w("PpgAnalyzerCore", "Invalid BPM=$bpm")
                 MeasurementAnalysis (MeasurementResult.Invalid, progress)
             }
         } else {
@@ -48,12 +44,10 @@ class PpgAnalyzerCore @Inject constructor(){
 
         val durationSec = (times.last() - times.first()) / 1000.0
         val bpm = (peaks * 60 / durationSec).toInt()
-        Log.d("PpgAnalyzerCore", "Peaks=$peaks durationSec=$durationSec bpm=$bpm")
         return bpm
     }
 
     fun reset() {
         values.clear()
-        Log.d("useCase","Use case is run")
     }
 }

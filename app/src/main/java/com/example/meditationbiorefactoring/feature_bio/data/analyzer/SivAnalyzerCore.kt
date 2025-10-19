@@ -2,19 +2,20 @@ package com.example.meditationbiorefactoring.feature_bio.data.analyzer
 
 import android.media.AudioFormat
 import android.media.AudioRecord
-import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementAnalysis
-import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementAnalysis
+import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementResult
 import android.media.MediaRecorder
+import com.example.meditationbiorefactoring.feature_bio.domain.util.SignalProcessing
 import kotlin.math.pow
+import kotlin.math.sqrt
 
 class SivAnalyzerCore {
     private val sampleRate = 16000
     private val channelConfig = AudioFormat.CHANNEL_IN_MONO
     private val audioFormat = AudioFormat.ENCODING_PCM_16BIT
-
     private var recorder: AudioRecord? = null
     private lateinit var buffer: ShortArray
-    private var bufferSize: Int = 0
+    private var bufferSize = 0
     private var currentIndex = 0
     private var isRecording = false
 
@@ -52,17 +53,13 @@ class SivAnalyzerCore {
     }
 
     fun stopAndAnalyze(): MeasurementAnalysis {
-        if (!isRecording || recorder == null) {
-            return MeasurementAnalysis(MeasurementResult.Error, 0f)
-        }
-        if (currentIndex <= 0) {
-            return MeasurementAnalysis(MeasurementResult.Error, 1f)
-        }
+        if (!isRecording || recorder == null) return MeasurementAnalysis(MeasurementResult.Error, 0f)
+        if (currentIndex <= 0) return MeasurementAnalysis(MeasurementResult.Error, 1f)
 
         isRecording = false
         try {
             recorder?.stop()
-        } catch (_: IllegalStateException) { }
+        } catch (_: IllegalStateException) {}
         recorder?.release()
         recorder = null
 
@@ -77,22 +74,11 @@ class SivAnalyzerCore {
     }
 
     private fun analyze(buffer: ShortArray, length: Int): Double {
-        var sumSq = 0.0
-        var maxAmp = 0.0
-        val norm = DoubleArray(length)
-
-        for (i in 0 until length) {
-            norm[i] = buffer[i] / 32768.0
-            sumSq += norm[i] * norm[i]
-            if (kotlin.math.abs(norm[i]) > maxAmp) maxAmp = kotlin.math.abs(norm[i])
-        }
-
-        val rms = kotlin.math.sqrt(sumSq / length)
-        val mean = sumSq / length
-        var std = 0.0
-        for (v in norm) std += (v * v - mean).pow(2)
-        std = kotlin.math.sqrt(std / length)
-
+        val norm = buffer.take(length).map { it / 32768.0 }.toDoubleArray()
+        val normalized = SignalProcessing.normalize(norm)
+        val rms = sqrt(normalized.map { it * it }.average())
+        val mean = normalized.average()
+        val std = sqrt(normalized.map { (it - mean).pow(2) }.average())
         return rms + std
     }
 }

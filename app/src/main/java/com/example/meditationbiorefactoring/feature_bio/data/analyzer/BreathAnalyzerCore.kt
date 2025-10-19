@@ -1,15 +1,14 @@
 package com.example.meditationbiorefactoring.feature_bio.data.analyzer
 
-import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementAnalysis
-import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementAnalysis
+import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.domain.util.SignalProcessing
 import javax.inject.Inject
-import kotlin.math.max
 import kotlin.math.min
 
 class BreathAnalyzerCore @Inject constructor() {
     private val zValues = mutableListOf<Float>()
     private val bufferSize = 1200
-    private val smoothingWindow = 20
     private val minPeakDistance = 30
     private val minPeakAmplitude = 0.007f
 
@@ -36,14 +35,7 @@ class BreathAnalyzerCore @Inject constructor() {
     }
 
     private fun computeBrpm(values: List<Float>): Int {
-        val smooth = mutableListOf<Float>()
-        for (i in values.indices) {
-            val start = max(0, i - smoothingWindow)
-            val end = min(values.size - 1, i + smoothingWindow)
-            val avg = values.subList(start, end + 1).average().toFloat()
-            smooth.add(avg)
-        }
-
+        val smooth = SignalProcessing.movingAverage(values, window = 20)
         var peaks = 0
         var lastPeak = -minPeakDistance
         for (i in 1 until smooth.size - 1) {

@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementResult
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.ResetSivMeasurementUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.StartSivRecordingUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.StopSivAndAnalyzeUseCase

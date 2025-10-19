@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
-import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementResult
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.BpmMeasurementUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.ResetBpmMeasurementUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.util.BioParamType

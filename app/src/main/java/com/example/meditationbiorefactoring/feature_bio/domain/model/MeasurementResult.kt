@@ -1,4 +1,4 @@
-package com.example.meditationbiorefactoring.feature_bio.domain.util
+package com.example.meditationbiorefactoring.feature_bio.domain.model
 
 sealed class MeasurementResult {
     data class Success(val value: Double) : MeasurementResult()

@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.meditationbiorefactoring.feature_bio.domain.util.MeasurementResult
+import com.example.meditationbiorefactoring.feature_bio.domain.model.MeasurementResult
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.BrpmMeasurementUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.use_case.ResetBrpmMeasurementUseCase
 import com.example.meditationbiorefactoring.feature_bio.domain.util.BioParamType

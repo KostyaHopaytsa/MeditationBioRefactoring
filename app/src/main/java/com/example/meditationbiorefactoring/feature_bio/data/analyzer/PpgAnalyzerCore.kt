@@ -11,8 +11,12 @@ class PpgAnalyzerCore @Inject constructor() {
     private val values = mutableListOf<Double>()
     private val timestamps = mutableListOf<Long>()
     private val maxBufferSize = 200
+    private var done = false
+    private var lastResult: MeasurementAnalysis? = null
 
     fun analyzeFrame(buffer: ByteArray): MeasurementAnalysis {
+        if (done) return lastResult ?: MeasurementAnalysis(MeasurementResult.Error, 1f)
+
         val avg = buffer.map { it.toInt() and 0xFF }.average()
         values.add(avg)
         timestamps.add(System.currentTimeMillis())
@@ -26,11 +30,13 @@ class PpgAnalyzerCore @Inject constructor() {
 
         return if (values.size == maxBufferSize) {
             val bpm = computeBpm(values, timestamps)
-            if (bpm in 40..150) {
+            done = true
+            lastResult = if (bpm in 40..150) {
                 MeasurementAnalysis(MeasurementResult.Success(bpm.toDouble()), 1f)
             } else {
-                MeasurementAnalysis(MeasurementResult.Invalid, progress)
+                MeasurementAnalysis(MeasurementResult.Invalid, 1f)
             }
+            lastResult!!
         } else {
             MeasurementAnalysis(MeasurementResult.Error, progress)
         }
@@ -39,17 +45,19 @@ class PpgAnalyzerCore @Inject constructor() {
     fun reset() {
         values.clear()
         timestamps.clear()
+        done = false
+        lastResult = null
     }
 
     private fun computeBpm(signal: List<Double>, times: List<Long>): Int {
-        val smoothed = SignalProcessing.ema(signal.toDoubleArray(), alpha = 0.1)
+        val smoothed = SignalProcessing.ema(signal.toDoubleArray(), alpha = 0.5)
         val normalized = SignalProcessing.normalize(smoothed)
         val filtered = SignalProcessing.bandpass(normalized)
-        val threshold = SignalProcessing.dynamicThreshold(filtered, multiplier = 0.5)
+        val threshold = SignalProcessing.dynamicThreshold(filtered, multiplier = 0.1)
 
         var peaks = 0
-        var i = 6
-        val minPeakDistance = 6
+        val minPeakDistance = 3
+        var i = minPeakDistance
 
         while (i < filtered.size - minPeakDistance) {
             var isPeak = filtered[i] > threshold
@@ -69,7 +77,7 @@ class PpgAnalyzerCore @Inject constructor() {
 
         val durationSec = (times.last() - times.first()) / 1000.0
         val bpm = (peaks * 60 / durationSec).toInt()
-        Log.d("bpmResult", "$bpm")
+        Log.d("bpmResult", "BPM=$bpm peaks=$peaks duration=$durationSec")
         return bpm
     }
 }

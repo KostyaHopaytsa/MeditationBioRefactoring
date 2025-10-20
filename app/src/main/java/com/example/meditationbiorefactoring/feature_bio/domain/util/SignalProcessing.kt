@@ -5,16 +5,6 @@ import kotlin.math.sqrt
 
 object SignalProcessing {
 
-    fun ema(data: DoubleArray, alpha: Double = 0.1): DoubleArray {
-        if (data.isEmpty()) return doubleArrayOf()
-        val result = DoubleArray(data.size)
-        result[0] = data[0]
-        for (i in 1 until data.size) {
-            result[i] = alpha * data[i] + (1 - alpha) * result[i - 1]
-        }
-        return result
-    }
-
     fun movingAverage(data: List<Float>, window: Int = 10): List<Float> {
         if (data.isEmpty()) return emptyList()
         val smooth = mutableListOf<Float>()
@@ -27,11 +17,21 @@ object SignalProcessing {
         return smooth
     }
 
+    fun ema(data: DoubleArray, alpha: Double = 0.1): DoubleArray {
+        if (data.isEmpty()) return doubleArrayOf()
+        val result = DoubleArray(data.size)
+        result[0] = data[0]
+        for (i in 1 until data.size) {
+            result[i] = alpha * data[i] + (1 - alpha) * result[i - 1]
+        }
+        return result
+    }
+
     fun bandpass(data: DoubleArray): DoubleArray {
         if (data.size < 3) return data
         val result = DoubleArray(data.size)
         for (i in 1 until data.size - 1) {
-            result[i] = data[i] - 0.5 * (data[i - 1] + data[i + 1])
+            result[i] = data[i] - 0.25 * (data[i - 1] + data[i + 1])
         }
         return result
     }

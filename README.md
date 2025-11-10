@@ -96,4 +96,4 @@ This structure ensures:
 
 **Kostiantyn Hopaitsa**  
 Android Developer | Kotlin, Jetpack Compose, MVVM + Clean Architecture, Coroutines, Retrofit, Room, Hilt 
-[LinkedIn](https://www.linkedin.com/in/kostya-hopaitsa-962a87397/) • [GitHub](https://github.com/KostyaHopaitsa)
+[LinkedIn](https://www.linkedin.com/in/kostiantyn-hopaitsa-962a87397) • [GitHub](https://github.com/KostyaHopaitsa)
